@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Night Reel — Your Watch Log</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0E0C0A;
+    --panel: #1A1614;
+    --panel-2: #221C19;
+    --gold: #D4AF37;
+    --gold-dim: #8f7726;
+    --velvet: #A13D3D;
+    --cream: #F2E9D8;
+    --stone: #8A8074;
+    --line: #33291f;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(ellipse at 20% -10%, rgba(161,61,61,0.12), transparent 45%),
+      radial-gradient(ellipse at 90% 0%, rgba(212,175,55,0.08), transparent 40%),
+      var(--bg);
+    color:var(--cream);
+    font-family:'Inter',sans-serif;
+    min-height:100vh;
+    padding:28px 18px 80px;
+  }
+  .wrap{max-width:1080px;margin:0 auto;}
+  header{text-align:center; padding:18px 10px 34px; position:relative;}
+  .eyebrow{font-family:'Space Mono',monospace; letter-spacing:.35em; font-size:11px; color:var(--gold); text-transform:uppercase; margin-bottom:10px;}
+  h1{font-family:'Bebas Neue',sans-serif; font-size:clamp(40px,8vw,74px); letter-spacing:.04em; margin:0; color:var(--cream); text-shadow:0 0 18px rgba(212,175,55,.25);}
+  h1 span{color:var(--velvet);}
+  .sub{color:var(--stone); font-size:14.5px; margin-top:8px;}
+  .bulb-row{display:flex; justify-content:center; gap:6px; margin-top:16px;}
+  .bulb{width:5px;height:5px;border-radius:50%;background:var(--gold);opacity:.35;}
+  .bulb.on{opacity:1; box-shadow:0 0 6px 1px var(--gold);}
+  .panel{background:linear-gradient(180deg,var(--panel),var(--panel-2)); border:1px solid var(--line); border-radius:14px; padding:22px; margin-bottom:22px;}
+  .panel h2{font-family:'Bebas Neue',sans-serif; letter-spacing:.05em; font-size:22px; margin:0 0 16px; color:var(--gold); display:flex;align-items:center;gap:10px;}
+  .panel h2::before{content:"";width:18px;height:2px;background:var(--velvet);display:inline-block;}
+  .panel-head{display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:16px;}
+  .panel-head h2{margin:0;}
+  form{display:grid; gap:14px; grid-template-columns:1fr 1fr;}
+  .field{display:flex;flex-direction:column;gap:6px; position:relative;}
+  .field.full{grid-column:1 / -1;}
+  label{font-size:12.5px; color:var(--stone); letter-spacing:.03em;}
+  input[type=text], input[type=number], input[type=date], select{
+    background:#12100D; border:1px solid var(--line); color:var(--cream); padding:10px 12px;
+    border-radius:8px; font-size:15px; font-family:'Inter',sans-serif; outline:none;
+  }
+  input:focus, select:focus{border-color:var(--gold);}
+  .type-toggle{display:flex; gap:8px;}
+  .type-toggle button{
+    flex:1; padding:10px; border-radius:8px; border:1px solid var(--line);
+    background:#12100D; color:var(--stone); cursor:pointer; font-size:14.5px;
+    font-family:'Inter',sans-serif; transition:.15s;
+  }
+  .type-toggle button.active{background:var(--velvet); color:var(--cream); border-color:var(--velvet);}
+  .rating-row{display:flex; align-items:center; gap:12px;}
+  input[type=range]{flex:1; accent-color:var(--gold);}
+  .rating-value{font-family:'Space Mono',monospace; font-size:18px; color:var(--gold); min-width:56px; text-align:right;}
+  .part-field, .season-field{display:none;}
+  .fav-field{display:flex; align-items:center; gap:8px;}
+  .fav-field input{accent-color:var(--gold); width:16px;height:16px;}
+  .submit-row{grid-column:1/-1; display:flex; justify-content:flex-end; gap:10px; align-items:center;}
+  #fetchmsg{font-size:12.5px; color:var(--stone); font-family:'Space Mono',monospace;}
+  button.primary{background:var(--gold); color:#1a1408; border:none; padding:12px 26px; border-radius:8px; font-weight:600; font-size:15px; cursor:pointer; font-family:'Inter',sans-serif; letter-spacing:.02em;}
+  button.primary:hover{background:#e6c34a;}
+  button.primary:disabled{opacity:.5; cursor:not-allowed;}
+  button.ghost{background:transparent; color:var(--gold); border:1px solid var(--gold-dim); padding:9px 18px; border-radius:8px; font-size:13.5px; cursor:pointer; font-family:'Inter',sans-serif;}
+  button.ghost:hover{background:rgba(212,175,55,0.08);}
+
+  /* ---- title autofill suggestions ---- */
+  .suggest-list{
+    position:absolute; top:100%; left:0; right:0; margin-top:4px;
+    background:#12100D; border:1px solid var(--line); border-radius:8px;
+    max-height:220px; overflow-y:auto; z-index:30; display:none;
+    box-shadow:0 8px 20px rgba(0,0,0,0.4);
+  }
+  .suggest-list.open{display:block;}
+  .suggest-item{padding:9px 12px; cursor:pointer; display:flex; justify-content:space-between; gap:10px; align-items:center; border-bottom:1px solid var(--line);}
+  .suggest-item:last-child{border-bottom:none;}
+  .suggest-item:hover{background:rgba(212,175,55,0.09);}
+  .suggest-item .sname{font-size:13.5px; color:var(--cream);}
+  .suggest-item small{color:var(--stone); font-family:'Space Mono',monospace; font-size:10.5px; white-space:nowrap;}
+
+  .dash-grid{display:grid; grid-template-columns:1.4fr 1fr; gap:20px;}
+  @media (max-width:760px){.dash-grid{grid-template-columns:1fr;} form{grid-template-columns:1fr;}}
+  .stat-row{display:flex; gap:14px; margin-bottom:14px; flex-wrap:wrap;}
+  .stat-row .stat{flex:1; min-width:80px;}
+  .stat{background:#12100D; border:1px solid var(--line); border-radius:10px; padding:14px; text-align:center;}
+  .stat .num{font-family:'Bebas Neue',sans-serif; font-size:32px; color:var(--gold);}
+  .stat .num.sm{font-size:24px;}
+  .stat .lbl{font-size:11.5px; color:var(--stone);}
+  .chart{display:flex; align-items:flex-end; gap:10px; height:150px; padding:10px 4px 0;}
+  .chart .col{flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; gap:4px;}
+  .chart .bars{display:flex; align-items:flex-end; gap:2px; height:110px;}
+  .chart .bar{width:9px; border-radius:3px 3px 0 0;}
+  .chart .bar.movie{background:var(--velvet);}
+  .chart .bar.series{background:var(--gold);}
+  .chart .mlabel{font-size:10.5px; color:var(--stone); font-family:'Space Mono',monospace;}
+  .legend{display:flex; gap:16px; margin-top:12px; font-size:12px; color:var(--stone); justify-content:center;}
+  .legend span{display:flex; align-items:center; gap:6px;}
+  .legend i{width:10px;height:10px;border-radius:2px;display:inline-block;}
+  .legend .m{background:var(--velvet);} .legend .s{background:var(--gold);}
+
+  .year-title{font-size:12.5px;color:var(--stone);letter-spacing:.05em;margin:18px 0 10px;}
+  .year-chips{display:flex; gap:8px; flex-wrap:wrap;}
+  .year-chip{background:#12100D; border:1px solid var(--line); border-radius:20px; padding:6px 14px; font-size:12.5px; font-family:'Space Mono',monospace; color:var(--cream); display:flex; gap:6px; align-items:center;}
+  .year-chip b{color:var(--gold);}
+
+  .fav-list{display:flex; flex-direction:column; gap:10px;}
+  .fav-item{display:flex; align-items:center; gap:10px; background:#12100D; border:1px solid var(--line); border-radius:8px; padding:8px 10px;}
+  .fav-item .poster-sm{width:34px;height:48px;object-fit:cover;border-radius:4px;background:#221C19;flex-shrink:0;}
+  .fav-item .info{flex:1; min-width:0;}
+  .fav-item .info .t{font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .fav-item .info .m{font-size:11px; color:var(--stone);}
+  .fav-item .r{font-family:'Space Mono',monospace; color:var(--gold); font-size:13px;}
+  .empty-note{color:var(--stone); font-size:13px; text-align:center; padding:14px 0;}
+
+  .search-box{position:relative; margin-bottom:14px;}
+  .search-box input{width:100%; padding-left:36px;}
+  .search-box::before{content:"🔎"; position:absolute; left:11px; top:50%; transform:translateY(-50%); font-size:13px; opacity:.6;}
+  .search-hint{font-size:11.5px; color:var(--stone); margin-top:6px; font-family:'Space Mono',monospace;}
+
+  .list-scroll{max-height:440px; overflow-y:auto; padding-right:6px;}
+  .list-scroll::-webkit-scrollbar{width:8px;}
+  .list-scroll::-webkit-scrollbar-track{background:#12100D; border-radius:8px;}
+  .list-scroll::-webkit-scrollbar-thumb{background:var(--line); border-radius:8px;}
+  .list-scroll::-webkit-scrollbar-thumb:hover{background:var(--gold-dim);}
+
+  #cardsRow{display:flex; flex-direction:column; gap:14px;}
+  .ticket{display:flex; background:#12100D; border:1px solid var(--line); border-radius:10px; overflow:hidden; position:relative; animation:slideIn .35s ease;}
+  @keyframes slideIn{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+  .ticket .poster{width:64px; min-width:64px; height:96px; object-fit:cover; background:#221C19;}
+  .perf{width:0; border-left:2px dashed #3a3128; position:relative; flex-shrink:0;}
+  .ticket .body{flex:1; padding:12px 14px; display:flex; flex-direction:column; justify-content:center; gap:4px; min-width:0;}
+  .ticket .title-line{display:flex; align-items:baseline; gap:8px; flex-wrap:wrap;}
+  .ticket .title-line .name{font-family:'Bebas Neue',sans-serif; font-size:19px; letter-spacing:.02em; color:var(--cream);}
+  .ticket .title-line .name .subtitle{color:var(--gold);}
+  .ticket .tag{font-size:10px; font-family:'Space Mono',monospace; padding:2px 7px; border-radius:20px; border:1px solid var(--line); color:var(--stone); text-transform:uppercase; letter-spacing:.05em;}
+  .ticket .tag.series{color:var(--gold); border-color:var(--gold-dim);}
+  .ticket .meta{font-size:12px; color:var(--stone); font-family:'Space Mono',monospace;}
+  .ticket .star{color:var(--gold);}
+  .ticket .ratingbox{width:70px; min-width:70px; display:flex; flex-direction:column; align-items:center; justify-content:center; background:linear-gradient(180deg,var(--velvet),#7a2c2c); color:var(--cream); gap:2px;}
+  .ticket .ratingbox .rv{font-family:'Bebas Neue',sans-serif; font-size:26px; line-height:1;}
+  .ticket .ratingbox .r10{font-size:10px; font-family:'Space Mono',monospace; opacity:.85;}
+  .ticket .del{position:absolute; top:6px; right:6px; background:none; border:none; color:var(--stone); cursor:pointer; font-size:14px; opacity:.5; padding:4px;}
+  .ticket .del:hover{opacity:1; color:var(--velvet);}
+
+  /* ---- Full list modal ---- */
+  .modal-overlay{
+    display:none; position:fixed; inset:0; background:rgba(6,5,4,0.82);
+    z-index:100; align-items:flex-start; justify-content:center; padding:40px 16px; overflow-y:auto;
+  }
+  .modal-overlay.open{display:flex;}
+  .modal-box{
+    background:linear-gradient(180deg,var(--panel),var(--panel-2)); border:1px solid var(--line);
+    border-radius:14px; padding:22px; max-width:940px; width:100%; max-height:85vh; display:flex; flex-direction:column;
+  }
+  .modal-box .panel-head{margin-bottom:14px;}
+  .modal-close{background:none; border:1px solid var(--line); color:var(--stone); border-radius:8px; padding:7px 14px; cursor:pointer; font-size:13px;}
+  .modal-close:hover{color:var(--cream); border-color:var(--velvet);}
+  .table-scroll{overflow-y:auto; flex:1;}
+  table.full-table{width:100%; border-collapse:collapse; font-size:13.5px;}
+  table.full-table th{
+    text-align:left; font-family:'Space Mono',monospace; font-size:11px; letter-spacing:.05em;
+    color:var(--stone); text-transform:uppercase; padding:8px 10px; border-bottom:1px solid var(--line);
+    position:sticky; top:0; background:var(--panel-2);
+  }
+  table.full-table td{padding:9px 10px; border-bottom:1px solid var(--line); vertical-align:middle;}
+  table.full-table tr:hover td{background:rgba(212,175,55,0.04);}
+  table.full-table .ttag{font-size:10px; font-family:'Space Mono',monospace; padding:2px 7px; border-radius:20px; border:1px solid var(--line); color:var(--stone);}
+  table.full-table .ttag.series{color:var(--gold); border-color:var(--gold-dim);}
+  table.full-table .rt{color:var(--gold); font-family:'Space Mono',monospace;}
+  table.full-table .ord{font-family:'Space Mono',monospace; color:var(--stone); font-size:12.5px;}
+
+  ::placeholder{color:#5c5448;}
+  footer{text-align:center; color:var(--stone); font-size:11.5px; margin-top:30px; font-family:'Space Mono',monospace;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">PERSONAL SCREENING LOG</div>
+    <h1>NIGHT <span>REEL</span></h1>
+    <div class="sub">Your personal ticket stub for everything you've watched</div>
+    <div class="bulb-row" id="bulbRow"></div>
+  </header>
+
+  <div class="panel">
+    <h2>Add a New Entry</h2>
+    <form id="entryForm" autocomplete="off">
+      <div class="field full">
+        <label>Type</label>
+        <div class="type-toggle">
+          <button type="button" class="active" data-type="movie">🎬 Movie</button>
+          <button type="button" data-type="series">📺 Series</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Title</label>
+        <input type="text" id="titleInput" placeholder="e.g. The Godfather" required autocomplete="off">
+        <div class="suggest-list" id="suggestList"></div>
+      </div>
+      <div class="field">
+        <label>Release Year</label>
+        <input type="number" id="yearInput" placeholder="e.g. 1972" min="1888" max="2100" required>
+      </div>
+
+      <div class="field full">
+        <label>Subtitle <span style="opacity:.6;">(optional — e.g. Part II, Endgame)</span></label>
+        <input type="text" id="subtitleInput" placeholder="e.g. Part II">
+      </div>
+
+      <div class="field part-field" id="partField">
+        <label>Part Number</label>
+        <input type="number" id="partInput" placeholder="e.g. 2" min="1" max="50">
+      </div>
+      <div class="field season-field" id="seasonField">
+        <label>Season Number</label>
+        <input type="number" id="seasonInput" placeholder="e.g. 1" min="1" max="50">
+      </div>
+      <div class="field">
+        <label>Date Watched</label>
+        <input type="date" id="dateInput">
+      </div>
+
+      <div class="field full">
+        <label>Rating (out of 10)</label>
+        <div class="rating-row">
+          <input type="range" id="ratingInput" min="0" max="10" step="0.5" value="7">
+          <div class="rating-value"><span id="ratingVal">7.0</span>/10</div>
+        </div>
+      </div>
+
+      <div class="field fav-field full">
+        <input type="checkbox" id="favInput">
+        <label style="margin:0" for="favInput">Mark as favorite</label>
+      </div>
+
+      <div class="submit-row">
+        <span id="fetchmsg"></span>
+        <button class="primary" type="submit" id="addBtn">Add to Watch List</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="panel">
+    <h2>Dashboard</h2>
+
+    <div class="dash-grid">
+      <div>
+        <div class="stat-row">
+          <div class="stat"><div class="num" id="totalMovies">0</div><div class="lbl">Total Movies</div></div>
+          <div class="stat"><div class="num" id="totalSeries">0</div><div class="lbl">Total Series</div></div>
+          <div class="stat"><div class="num" id="totalFav">0</div><div class="lbl">Favorites</div></div>
+        </div>
+        <div class="stat-row">
+          <div class="stat"><div class="num sm" id="weekCount">0</div><div class="lbl">This Week</div></div>
+          <div class="stat"><div class="num sm" id="monthCount">0</div><div class="lbl">This Month</div></div>
+          <div class="stat"><div class="num sm" id="yearCount">0</div><div class="lbl">This Year</div></div>
+        </div>
+        <div class="chart" id="chartArea"></div>
+        <div class="legend"><span><i class="m"></i>Movie</span><span><i class="s"></i>Series</span></div>
+
+        <div class="year-title">BY YEAR</div>
+        <div class="year-chips" id="yearChips"></div>
+      </div>
+      <div>
+        <div style="font-size:12.5px;color:var(--stone);letter-spacing:.05em;margin-bottom:10px;">⭐ FAVORITES</div>
+        <div class="fav-list" id="favList"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head">
+      <h2>Watch List</h2>
+      <button class="ghost" id="openListBtn" type="button">View Full List</button>
+    </div>
+
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="Search titles you've already watched...">
+    </div>
+    <div class="search-hint" id="searchHint"></div>
+
+    <div class="list-scroll">
+      <div id="cardsRow"></div>
+      <div class="empty-note" id="emptyNote" style="display:none;">Nothing added yet. Use the form above to log your first watch.</div>
+    </div>
+  </div>
+
+  <footer>NIGHT REEL — every entry is saved to your account</footer>
+</div>
+
+<!-- FULL LIST MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-box">
+    <div class="panel-head">
+      <h2>Full Watch List</h2>
+      <button class="modal-close" id="closeListBtn" type="button">Close ✕</button>
+    </div>
+    <div class="table-scroll">
+      <table class="full-table">
+        <thead>
+          <tr>
+            <th>Title (Year)</th>
+            <th>Type</th>
+            <th>Part / Season</th>
+            <th>Rating</th>
+            <th>Watched On</th>
+            <th>Watch Order</th>
+          </tr>
+        </thead>
+        <tbody id="fullTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCFFGMuRBYIbHAssNFARznJlzJXX9XvDbY",
+  authDomain: "data-entry-709a8.firebaseapp.com",
+  projectId: "data-entry-709a8",
+  storageBucket: "data-entry-709a8.firebasestorage.app",
+  messagingSenderId: "825642482490",
+  appId: "1:825642482490:web:651a2f6e068fd9484b2e03",
+  measurementId: "G-8Q8C5EJNP8"
+};
+const firebaseApp = initializeApp(firebaseConfig);
+const db = getFirestore(firebaseApp);
+const entriesCol = collection(db, 'entries');
+
+const OMDB_API_KEY = '2e895453';
+
+const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const titlePlaceholders = { movie: 'e.g. The Godfather', series: 'e.g. Game of Thrones' };
+let entries = [];
+let currentType = 'movie';
+let searchQuery = '';
+
+const bulbRow = document.getElementById('bulbRow');
+for(let i=0;i<14;i++){
+  const b = document.createElement('div');
+  b.className = 'bulb' + (i%2===0 ? ' on':'');
+  bulbRow.appendChild(b);
+}
+setInterval(()=>{
+  document.querySelectorAll('.bulb').forEach(b=>b.classList.toggle('on'));
+},900);
+
+let unsubscribeSnapshot = null;
+function startSync(){
+  unsubscribeSnapshot = onSnapshot(entriesCol, (snapshot)=>{
+    entries = snapshot.docs.map(d=>d.data());
+    entries.sort((a,b)=> (b.createdAt||0) - (a.createdAt||0));
+    renderAll();
+  }, (err)=>{
+    console.error('Firestore sync error', err);
+  });
+}
+async function saveEntry(entry){
+  try{ await setDoc(doc(db,'entries', entry.id), entry); }
+  catch(e){ console.error('save failed', e); }
+}
+async function removeEntry(id){
+  try{ await deleteDoc(doc(db,'entries', id)); }
+  catch(e){ console.error('delete failed', e); }
+}
+
+function updateTypeFieldVisibility(){
+  document.getElementById('seasonField').style.display = currentType==='series' ? 'flex' : 'none';
+  document.getElementById('partField').style.display = currentType==='movie' ? 'flex' : 'none';
+  document.getElementById('titleInput').placeholder = titlePlaceholders[currentType];
+}
+
+document.querySelectorAll('.type-toggle button').forEach(btn=>{
+  btn.onclick = ()=>{
+    document.querySelectorAll('.type-toggle button').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    currentType = btn.dataset.type;
+    updateTypeFieldVisibility();
+  };
+});
+updateTypeFieldVisibility();
+
+const ratingInput = document.getElementById('ratingInput');
+const ratingVal = document.getElementById('ratingVal');
+ratingInput.oninput = ()=>{ ratingVal.textContent = parseFloat(ratingInput.value).toFixed(1); };
+
+document.getElementById('dateInput').value = new Date().toISOString().split('T')[0];
+
+async function fetchPoster(title, year){
+  try{
+    const url = `https://www.omdbapi.com/?apikey=${OMDB_API_KEY}&t=${encodeURIComponent(title)}&y=${encodeURIComponent(year)}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    if(data && data.Response === 'True'){
+      return { poster: data.Poster && data.Poster !== 'N/A' ? data.Poster : null, year: data.Year ? data.Year.slice(0,4) : year };
+    }
+    return null;
+  }catch(e){ return null; }
+}
+
+// ---------- title autofill suggestions ----------
+const titleInput = document.getElementById('titleInput');
+const suggestList = document.getElementById('suggestList');
+
+function uniqueTitleMatches(query){
+  const q = query.trim().toLowerCase();
+  if(!q) return [];
+  const seen = new Set();
+  const matches = [];
+  entries.forEach(en=>{
+    const key = en.title.toLowerCase();
+    if(key.includes(q) && !seen.has(key)){
+      seen.add(key);
+      matches.push(en);
+    }
+  });
+  return matches.slice(0,6);
+}
+
+function renderSuggestions(){
+  const matches = uniqueTitleMatches(titleInput.value);
+  if(matches.length===0){ suggestList.classList.remove('open'); suggestList.innerHTML=''; return; }
+  suggestList.innerHTML = matches.map(en=>{
+    const countSame = entries.filter(e=>e.title.toLowerCase()===en.title.toLowerCase()).length;
+    return `
+      <div class="suggest-item" data-title="${escapeAttr(en.title)}" data-year="${escapeAttr(en.year)}" data-type="${en.type}">
+        <span class="sname">${escapeHtml(en.title)} <span style="color:var(--stone);">(${escapeHtml(en.year)})</span></span>
+        <small>${en.type==='series'?'Series':'Movie'} · watched ${countSame}×</small>
+      </div>
+    `;
+  }).join('');
+  suggestList.classList.add('open');
+}
+
+titleInput.addEventListener('input', renderSuggestions);
+titleInput.addEventListener('focus', renderSuggestions);
+document.addEventListener('click', (e)=>{
+  if(!e.target.closest('.field') || !e.target.closest('.field').contains(titleInput)){
+    if(!suggestList.contains(e.target)) suggestList.classList.remove('open');
+  }
+});
+
+suggestList.addEventListener('click', (e)=>{
+  const item = e.target.closest('.suggest-item');
+  if(!item) return;
+  const title = item.dataset.title;
+  const year = item.dataset.year;
+  const type = item.dataset.type;
+
+  titleInput.value = title;
+  document.getElementById('yearInput').value = year;
+
+  document.querySelectorAll('.type-toggle button').forEach(b=>b.classList.toggle('active', b.dataset.type===type));
+  currentType = type;
+  updateTypeFieldVisibility();
+
+  // suggest next part/season number based on existing entries with same title+type
+  const sameTitleEntries = entries.filter(e=> e.title.toLowerCase()===title.toLowerCase() && e.type===type);
+  if(type==='series'){
+    const maxSeason = Math.max(0, ...sameTitleEntries.map(e=>parseInt(e.season)||0));
+    document.getElementById('seasonInput').value = maxSeason ? maxSeason+1 : '';
+  } else {
+    const maxPart = Math.max(0, ...sameTitleEntries.map(e=>parseInt(e.part)||0));
+    document.getElementById('partInput').value = maxPart ? maxPart+1 : '';
+  }
+
+  suggestList.classList.remove('open');
+  document.getElementById('yearInput').focus();
+});
+
+function escapeAttr(s){ return String(s).replace(/"/g,'&quot;'); }
+
+document.getElementById('entryForm').addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  const title = document.getElementById('titleInput').value.trim();
+  const year = document.getElementById('yearInput').value.trim();
+  const subtitle = document.getElementById('subtitleInput').value.trim();
+  const season = document.getElementById('seasonInput').value;
+  const part = document.getElementById('partInput').value;
+  const rating = parseFloat(ratingInput.value);
+  const date = document.getElementById('dateInput').value || new Date().toISOString().split('T')[0];
+  const fav = document.getElementById('favInput').checked;
+  if(!title || !year) return;
+
+  const addBtn = document.getElementById('addBtn');
+  const msg = document.getElementById('fetchmsg');
+  addBtn.disabled = true;
+  msg.textContent = 'Fetching poster...';
+
+  let poster = null;
+  const r = await fetchPoster(title, year);
+  if(r){ poster = r.poster; }
+  else { msg.textContent = 'Poster not found, adding anyway.'; }
+
+  const entry = {
+    id: Date.now().toString(36) + Math.random().toString(36).slice(2,6),
+    title, year, subtitle: subtitle || null, type: currentType,
+    season: currentType==='series' ? (season || null) : null,
+    part: currentType==='movie' ? (part || null) : null,
+    rating, date, fav, poster,
+    createdAt: Date.now()
+  };
+  await saveEntry(entry);
+
+  document.getElementById('entryForm').reset();
+  document.getElementById('dateInput').value = new Date().toISOString().split('T')[0];
+  ratingInput.value = 7; ratingVal.textContent = '7.0';
+  document.querySelectorAll('.type-toggle button').forEach(b=>b.classList.remove('active'));
+  document.querySelector('.type-toggle button[data-type="movie"]').classList.add('active');
+  currentType='movie';
+  updateTypeFieldVisibility();
+  addBtn.disabled = false;
+  msg.textContent = '';
+});
+
+function deleteEntry(id){
+  removeEntry(id);
+}
+
+// ---------- search ----------
+document.getElementById('searchInput').addEventListener('input', (e)=>{
+  searchQuery = e.target.value.trim().toLowerCase();
+  renderCards();
+});
+
+function matchesSearch(en){
+  if(!searchQuery) return true;
+  return en.title.toLowerCase().includes(searchQuery);
+}
+
+// ---------- watch order helper ----------
+function computeWatchOrder(){
+  const map = {};
+  const sorted = [...entries].sort((a,b)=> new Date(a.date) - new Date(b.date));
+  const counters = { movie:0, series:0 };
+  sorted.forEach(en=>{
+    counters[en.type]++;
+    map[en.id] = counters[en.type];
+  });
+  return map;
+}
+
+function displayTitle(en){
+  return en.subtitle
+    ? `${escapeHtml(en.title)}: <span class="subtitle">${escapeHtml(en.subtitle)}</span> (${escapeHtml(en.year)})`
+    : `${escapeHtml(en.title)} (${escapeHtml(en.year)})`;
+}
+
+function renderCards(){
+  const row = document.getElementById('cardsRow');
+  const empty = document.getElementById('emptyNote');
+  const hint = document.getElementById('searchHint');
+  row.innerHTML = '';
+
+  const filtered = entries.filter(matchesSearch);
+
+  if(searchQuery){
+    hint.textContent = filtered.length
+      ? `Found ${filtered.length} match${filtered.length>1?'es':''} for "${searchQuery}" — looks like you've watched this before.`
+      : `No matches for "${searchQuery}" — you haven't watched this yet.`;
+  } else {
+    hint.textContent = '';
+  }
+
+  if(entries.length===0){ empty.style.display='block'; empty.textContent = "Nothing added yet. Use the form above to log your first watch."; return; }
+  if(filtered.length===0){ empty.style.display='block'; empty.textContent = "No matches found in your watch list."; return; }
+  empty.style.display='none';
+
+  filtered.forEach(en=>{
+    const div = document.createElement('div');
+    div.className = 'ticket';
+    let metaExtra = '';
+    if(en.type==='series' && en.season) metaExtra = ` · Season ${en.season}`;
+    if(en.type==='movie' && en.part) metaExtra = ` · Part ${en.part}`;
+    div.innerHTML = `
+      <button class="del" title="Remove">✕</button>
+      ${en.poster ? `<img class="poster" src="${en.poster}" alt="">` : `<div class="poster" style="display:flex;align-items:center;justify-content:center;color:var(--stone);font-size:10px;">no art</div>`}
+      <div class="perf"></div>
+      <div class="body">
+        <div class="title-line">
+          <span class="name">${displayTitle(en)}</span>
+          <span class="tag ${en.type==='series'?'series':''}">${en.type==='series' ? 'Series' : 'Movie'}</span>
+          ${en.fav ? '<span class="star">★</span>' : ''}
+        </div>
+        <div class="meta">Watched: ${formatDate(en.date)}${metaExtra}</div>
+      </div>
+      <div class="ratingbox">
+        <div class="rv">${en.rating.toFixed(1)}</div>
+        <div class="r10">/ 10</div>
+      </div>
+    `;
+    div.querySelector('.del').onclick = ()=>deleteEntry(en.id);
+    row.appendChild(div);
+  });
+}
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function formatDate(d){
+  if(!d) return '-';
+  const parts = d.split('-');
+  return `${parts[2]}-${parts[1]}-${parts[0]}`;
+}
+
+function renderDashboard(){
+  const movies = entries.filter(e=>e.type==='movie');
+  const series = entries.filter(e=>e.type==='series');
+  document.getElementById('totalMovies').textContent = movies.length;
+  document.getElementById('totalSeries').textContent = series.length;
+  document.getElementById('totalFav').textContent = entries.filter(e=>e.fav).length;
+
+  const now = new Date();
+  const startOfWeek = new Date(now);
+  const dayIdx = (now.getDay() + 6) % 7; // Monday = 0
+  startOfWeek.setDate(now.getDate() - dayIdx);
+  startOfWeek.setHours(0,0,0,0);
+
+  let weekCount=0, monthCount=0, yearCount=0;
+  const byYear = {};
+  entries.forEach(en=>{
+    if(!en.date) return;
+    const d = new Date(en.date);
+    const y = d.getFullYear();
+    byYear[y] = (byYear[y]||0) + 1;
+    if(y === now.getFullYear()){
+      yearCount++;
+      if(d.getMonth() === now.getMonth()) monthCount++;
+    }
+    if(d >= startOfWeek && d <= now) weekCount++;
+  });
+  document.getElementById('weekCount').textContent = weekCount;
+  document.getElementById('monthCount').textContent = monthCount;
+  document.getElementById('yearCount').textContent = yearCount;
+
+  const yearChips = document.getElementById('yearChips');
+  const years = Object.keys(byYear).sort((a,b)=>b-a);
+  yearChips.innerHTML = years.length
+    ? years.map(y=>`<div class="year-chip">${y} <b>${byYear[y]}</b></div>`).join('')
+    : '<div class="empty-note" style="padding:0;">No data yet.</div>';
+
+  const year = now.getFullYear();
+  const counts = Array.from({length:12}, ()=>({movie:0, series:0}));
+  entries.forEach(en=>{
+    if(!en.date) return;
+    const d = new Date(en.date);
+    if(d.getFullYear()===year){
+      counts[d.getMonth()][en.type]++;
+    }
+  });
+  const maxVal = Math.max(1, ...counts.map(c=>Math.max(c.movie,c.series)));
+  const chart = document.getElementById('chartArea');
+  chart.innerHTML = '';
+  counts.forEach((c,i)=>{
+    const col = document.createElement('div');
+    col.className = 'col';
+    const mH = Math.round((c.movie/maxVal)*100);
+    const sH = Math.round((c.series/maxVal)*100);
+    col.innerHTML = `
+      <div class="bars">
+        <div class="bar movie" style="height:${mH}px" title="Movie: ${c.movie}"></div>
+        <div class="bar series" style="height:${sH}px" title="Series: ${c.series}"></div>
+      </div>
+      <div class="mlabel">${monthNames[i]}</div>
+    `;
+    chart.appendChild(col);
+  });
+
+  const favList = document.getElementById('favList');
+  const favs = entries.filter(e=>e.fav).sort((a,b)=>b.rating-a.rating);
+  favList.innerHTML = '';
+  if(favs.length===0){
+    favList.innerHTML = '<div class="empty-note">No favorites added yet.</div>';
+  }else{
+    favs.slice(0,8).forEach(en=>{
+      const item = document.createElement('div');
+      item.className = 'fav-item';
+      item.innerHTML = `
+        ${en.poster ? `<img class="poster-sm" src="${en.poster}">` : `<div class="poster-sm"></div>`}
+        <div class="info">
+          <div class="t">${displayTitle(en)}</div>
+          <div class="m">${en.type==='series' ? 'Series' + (en.season ? ' · Season '+en.season : '') : 'Movie' + (en.part ? ' · Part '+en.part : '')}</div>
+        </div>
+        <div class="r">${en.rating.toFixed(1)}</div>
+      `;
+      favList.appendChild(item);
+    });
+  }
+}
+
+// ---------- full list modal ----------
+function renderFullTable(){
+  const body = document.getElementById('fullTableBody');
+  const orderMap = computeWatchOrder();
+  const sorted = [...entries].sort((a,b)=> new Date(b.date) - new Date(a.date));
+  body.innerHTML = sorted.map(en=>{
+    const order = orderMap[en.id];
+    const orderLabel = en.type==='series' ? `Series #${order}` : `Movie #${order}`;
+    const partSeason = en.type==='series' ? (en.season ? 'S'+en.season : '—') : (en.part ? 'P'+en.part : '—');
+    return `
+      <tr>
+        <td>${displayTitle(en)}${en.fav ? ' <span class="star">★</span>' : ''}</td>
+        <td><span class="ttag ${en.type==='series'?'series':''}">${en.type==='series'?'Series':'Movie'}</span></td>
+        <td>${partSeason}</td>
+        <td class="rt">${en.rating.toFixed(1)}/10</td>
+        <td>${formatDate(en.date)}</td>
+        <td class="ord">${orderLabel}</td>
+      </tr>
+    `;
+  }).join('') || `<tr><td colspan="6" style="text-align:center;color:var(--stone);padding:20px;">No entries yet.</td></tr>`;
+}
+
+const modalOverlay = document.getElementById('modalOverlay');
+document.getElementById('openListBtn').onclick = ()=>{
+  renderFullTable();
+  modalOverlay.classList.add('open');
+};
+document.getElementById('closeListBtn').onclick = ()=>{
+  modalOverlay.classList.remove('open');
+};
+modalOverlay.addEventListener('click', (e)=>{
+  if(e.target === modalOverlay) modalOverlay.classList.remove('open');
+});
+
+function renderAll(){ renderCards(); renderDashboard(); }
+
+startSync();
+</script>
+</body>
+</html>
