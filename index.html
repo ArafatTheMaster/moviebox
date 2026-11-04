@@ -179,6 +179,31 @@
   table.full-table .rt{color:var(--gold); font-family:'Space Mono',monospace;}
   table.full-table .ord{font-family:'Space Mono',monospace; color:var(--stone); font-size:12.5px;}
 
+  textarea{background:#12100D;border:1px solid var(--line);color:var(--cream);padding:10px 12px;border-radius:8px;font-size:14.5px;font-family:'Inter',sans-serif;outline:none;resize:vertical;min-height:84px;width:100%}
+  textarea:focus{border-color:var(--gold)}
+  .chips{display:flex;flex-wrap:wrap;gap:7px}
+  .chip input{display:none}
+  .chip span{display:inline-block;padding:5px 12px;border:1px solid var(--line);border-radius:20px;font-size:12.5px;color:var(--stone);cursor:pointer;background:#12100D}
+  .chip:has(input:checked) span{background:var(--velvet);border-color:var(--velvet);color:var(--cream)}
+  .ticket{cursor:pointer}
+  .ticket .edit{position:absolute;top:6px;right:30px;background:none;border:none;color:var(--stone);cursor:pointer;font-size:14px;opacity:.5;padding:4px}
+  .ticket .edit:hover{opacity:1;color:var(--gold)}
+  .chips-line{display:flex;gap:5px;flex-wrap:wrap}
+  #detailBody{overflow-y:auto}
+  .dtop{display:flex;gap:16px;margin-bottom:14px}
+  .dtop img{width:110px;height:165px;object-fit:cover;border-radius:8px;background:#221C19}
+  .dinfo{flex:1;display:flex;flex-direction:column;gap:6px;font-size:13.5px}
+  .drow b{color:var(--stone);font-weight:500;display:inline-block;min-width:80px;font-size:12px}
+  .dlabel{font-size:12px;color:var(--stone);letter-spacing:.05em;margin:16px 0 8px}
+  .review{background:#12100D;border:1px solid var(--line);border-radius:8px;padding:12px;white-space:pre-wrap;font-size:14px;line-height:1.55}
+  .cmt{background:#12100D;border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-bottom:8px}
+  .ctext{white-space:pre-wrap;font-size:14px}
+  .cmeta{display:flex;justify-content:space-between;font-size:11px;color:var(--stone);font-family:'Space Mono',monospace;margin-top:6px}
+  .cmeta button{background:none;border:none;color:var(--stone);cursor:pointer;font-size:11px}
+  .cmeta button:hover{color:var(--gold)}
+  .dactions{display:flex;gap:10px;align-items:center;margin-top:12px;justify-content:flex-end;flex-wrap:wrap}
+  .danger{border-color:var(--velvet)!important;color:#e08a8a}
+  button.primary.danger{background:var(--velvet);color:var(--cream)}
   ::placeholder{color:#5c5448;}
   footer{text-align:center; color:var(--stone); font-size:11.5px; margin-top:30px; font-family:'Space Mono',monospace;}
 </style>
@@ -194,7 +219,7 @@
   </header>
 
   <div class="panel">
-    <h2>Add a New Entry</h2>
+    <h2 id="formTitle">Add a New Entry</h2>
     <form id="entryForm" autocomplete="off">
       <div class="field full">
         <label>Type</label>
@@ -232,6 +257,14 @@
         <input type="date" id="dateInput">
       </div>
 
+      <div class="field"><label>Category</label><select id="categoryInput"></select></div>
+      <div class="field"><label>Watch Status</label><select id="statusInput"></select></div>
+      <div class="field full"><label>Genre <span style="opacity:.6;">(select all that apply)</span></label><div class="chips" id="genreBox"></div></div>
+      <div class="field"><label>Director</label><input type="text" id="directorInput" placeholder="e.g. Christopher Nolan"></div>
+      <div class="field"><label>Main Cast</label><input type="text" id="castInput" placeholder="e.g. Leonardo DiCaprio, Tom Hardy"></div>
+      <div class="field full"><label>Platform / Source <span style="opacity:.6;">(Netflix, Theatre, Hoichoi…)</span></label><input type="text" id="platformInput"></div>
+      <div class="field full"><label>Critic Notes / Review</label><textarea id="reviewInput" placeholder="Story, acting, direction, what worked, what didn't…"></textarea></div>
+
       <div class="field full">
         <label>Rating (out of 10)</label>
         <div class="rating-row">
@@ -246,7 +279,7 @@
       </div>
 
       <div class="submit-row">
-        <span id="fetchmsg"></span>
+        <button type="button" class="ghost" id="cancelEdit" style="display:none">Cancel edit</button><span id="fetchmsg"></span>
         <button class="primary" type="submit" id="addBtn">Add to Watch List</button>
       </div>
     </form>
@@ -287,7 +320,7 @@
     </div>
 
     <div class="search-box">
-      <input type="text" id="searchInput" placeholder="Search titles you've already watched...">
+      <input type="text" id="searchInput" placeholder="Search title, director, cast, genre...">
     </div>
     <div class="search-hint" id="searchHint"></div>
 
@@ -325,6 +358,15 @@
   </div>
 </div>
 
+<div class="modal-overlay" id="detailOverlay"><div class="modal-box" id="detailBody"></div></div>
+<div class="modal-overlay" id="confirmOverlay" style="z-index:200;align-items:center">
+  <div class="modal-box" style="max-width:420px;max-height:none">
+    <h2 style="font-family:'Bebas Neue',sans-serif;color:var(--gold);margin:0 0 10px">Are you sure?</h2>
+    <p id="confirmMsg" style="color:var(--cream);font-size:14.5px;margin:0"></p>
+    <div class="dactions"><button class="ghost" id="confirmNo" type="button">Cancel</button><button class="primary danger" id="confirmYes" type="button">Yes, delete</button></div>
+  </div>
+</div>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
@@ -344,7 +386,7 @@ const firebaseApp = initializeApp(firebaseConfig);
 const db = getFirestore(firebaseApp);
 const entriesCol = collection(db, 'entries');
 
-const OMDB_API_KEY = '2e895453';
+const TMDB_API_KEY = '765451aaa43c1c9ed692494e19a50449';
 
 const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const titlePlaceholders = { movie: 'e.g. The Godfather', series: 'e.g. Game of Thrones' };
@@ -403,16 +445,25 @@ ratingInput.oninput = ()=>{ ratingVal.textContent = parseFloat(ratingInput.value
 
 document.getElementById('dateInput').value = new Date().toISOString().split('T')[0];
 
-async function fetchPoster(title, year){
-  try{
-    const url = `https://www.omdbapi.com/?apikey=${OMDB_API_KEY}&t=${encodeURIComponent(title)}&y=${encodeURIComponent(year)}`;
-    const res = await fetch(url);
-    const data = await res.json();
-    if(data && data.Response === 'True'){
-      return { poster: data.Poster && data.Poster !== 'N/A' ? data.Poster : null, year: data.Year ? data.Year.slice(0,4) : year };
-    }
-    return null;
-  }catch(e){ return null; }
+let lastPosterError = '';
+async function fetchPoster(title, year, type){
+  lastPosterError = '';
+  const kind = type==='series' ? 'tv' : 'movie';
+  const yKey = type==='series' ? 'first_air_date_year' : 'year';
+  for(const useYear of [true, false]){
+    try{
+      const url = `https://api.themoviedb.org/3/search/${kind}?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(title)}` + (useYear ? `&${yKey}=${encodeURIComponent(year)}` : '');
+      const res = await fetch(url);
+      const data = await res.json();
+      if(!res.ok){ lastPosterError = data.status_message || ('HTTP ' + res.status); return null; }
+      if(data.results && data.results.length){
+        const hit = data.results.find(r=>r.poster_path) || data.results[0];
+        return { poster: hit.poster_path ? 'https://image.tmdb.org/t/p/w185' + hit.poster_path : null, year };
+      }
+      lastPosterError = 'no match';
+    }catch(e){ lastPosterError = 'network/blocked: ' + e.message; console.error('TMDB error', e); return null; }
+  }
+  return null;
 }
 
 // ---------- title autofill suggestions ----------
@@ -504,22 +555,26 @@ document.getElementById('entryForm').addEventListener('submit', async (e)=>{
   addBtn.disabled = true;
   msg.textContent = 'Fetching poster...';
 
-  let poster = null;
-  const r = await fetchPoster(title, year);
-  if(r){ poster = r.poster; }
-  else { msg.textContent = 'Poster not found, adding anyway.'; }
+  const old = editingId ? entries.find(e=>e.id===editingId) : null;
+  let poster = old ? old.poster : null;
+  if(!old || old.title!==title || old.year!==year){
+    const r = await fetchPoster(title, year, currentType);
+    if(r){ poster = r.poster; }
+    else { msg.textContent = 'Poster not found (' + lastPosterError + '), adding anyway.'; await new Promise(r=>setTimeout(r,1800)); }
+  }
 
   const entry = {
-    id: Date.now().toString(36) + Math.random().toString(36).slice(2,6),
+    id: old ? old.id : uid(),
     title, year, subtitle: subtitle || null, type: currentType,
     season: currentType==='series' ? (season || null) : null,
     part: currentType==='movie' ? (part || null) : null,
-    rating, date, fav, poster,
-    createdAt: Date.now()
+    rating, date, fav, poster, ...extras(),
+    comments: old ? (old.comments||[]) : [],
+    createdAt: old ? old.createdAt : Date.now()
   };
   await saveEntry(entry);
 
-  document.getElementById('entryForm').reset();
+  resetForm();
   document.getElementById('dateInput').value = new Date().toISOString().split('T')[0];
   ratingInput.value = 7; ratingVal.textContent = '7.0';
   document.querySelectorAll('.type-toggle button').forEach(b=>b.classList.remove('active'));
@@ -531,7 +586,8 @@ document.getElementById('entryForm').addEventListener('submit', async (e)=>{
 });
 
 function deleteEntry(id){
-  removeEntry(id);
+  const en = entries.find(e=>e.id===id); if(!en) return;
+  askConfirm(`Delete "${en.title}" permanently? This cannot be undone.`, ()=>{ removeEntry(id); if(detailId===id) closeDetail(); });
 }
 
 // ---------- search ----------
@@ -542,7 +598,7 @@ document.getElementById('searchInput').addEventListener('input', (e)=>{
 
 function matchesSearch(en){
   if(!searchQuery) return true;
-  return en.title.toLowerCase().includes(searchQuery);
+  return [en.title,en.director,en.cast,en.category,en.platform,...(en.genres||[])].filter(Boolean).join(' ').toLowerCase().includes(searchQuery);
 }
 
 // ---------- watch order helper ----------
@@ -590,7 +646,7 @@ function renderCards(){
     if(en.type==='series' && en.season) metaExtra = ` · Season ${en.season}`;
     if(en.type==='movie' && en.part) metaExtra = ` · Part ${en.part}`;
     div.innerHTML = `
-      <button class="del" title="Remove">✕</button>
+      <button class="edit" title="Edit">✎</button><button class="del" title="Delete">✕</button>
       ${en.poster ? `<img class="poster" src="${en.poster}" alt="">` : `<div class="poster" style="display:flex;align-items:center;justify-content:center;color:var(--stone);font-size:10px;">no art</div>`}
       <div class="perf"></div>
       <div class="body">
@@ -599,14 +655,17 @@ function renderCards(){
           <span class="tag ${en.type==='series'?'series':''}">${en.type==='series' ? 'Series' : 'Movie'}</span>
           ${en.fav ? '<span class="star">★</span>' : ''}
         </div>
-        <div class="meta">Watched: ${formatDate(en.date)}${metaExtra}</div>
+        <div class="meta">Watched: ${formatDate(en.date)}${metaExtra}${en.status&&en.status!=='Watched'?' · '+en.status:''}${(en.comments||[]).length?' · 💬 '+en.comments.length:''}</div>
+        ${tagsLine(en)}
       </div>
       <div class="ratingbox">
         <div class="rv">${en.rating.toFixed(1)}</div>
         <div class="r10">/ 10</div>
       </div>
     `;
-    div.querySelector('.del').onclick = ()=>deleteEntry(en.id);
+    div.querySelector('.del').onclick = (e)=>{ e.stopPropagation(); deleteEntry(en.id); };
+    div.querySelector('.edit').onclick = (e)=>{ e.stopPropagation(); startEdit(en.id); };
+    div.addEventListener('click', ()=>openDetail(en.id));
     row.appendChild(div);
   });
 }
@@ -712,7 +771,7 @@ function renderFullTable(){
     const orderLabel = en.type==='series' ? `Series #${order}` : `Movie #${order}`;
     const partSeason = en.type==='series' ? (en.season ? 'S'+en.season : '—') : (en.part ? 'P'+en.part : '—');
     return `
-      <tr>
+      <tr data-id="${en.id}" style="cursor:pointer">
         <td>${displayTitle(en)}${en.fav ? ' <span class="star">★</span>' : ''}</td>
         <td><span class="ttag ${en.type==='series'?'series':''}">${en.type==='series'?'Series':'Movie'}</span></td>
         <td>${partSeason}</td>
@@ -736,7 +795,109 @@ modalOverlay.addEventListener('click', (e)=>{
   if(e.target === modalOverlay) modalOverlay.classList.remove('open');
 });
 
-function renderAll(){ renderCards(); renderDashboard(); }
+// ================= critic features =================
+const CATEGORIES=['Bollywood Hindi','English (Hollywood)','Bangla','Tamil','Telugu','Malayalam','Kannada','Korean','Japanese & Chinese','Turkish','Spanish','Pakistani Movies','Hindi Dubbed','Dual Audio','DC, Marvel & Superhero','Oscar Winning','HEVC Collection','TV & Web Series','TV Show','Others'];
+const GENRES=['Action','Adventure','Anime','Animation & Cartoon','Biography','Comedy','Crime','Documentary','Drama','Fantasy','Horror','Mystery','Psychological','Romance','Sci-Fi','Sports','Thriller','War','Western'];
+const STATUSES=['Watched','Watching','Plan to Watch','Dropped'];
+const $ = id=>document.getElementById(id);
+const uid = ()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+$('categoryInput').innerHTML='<option value="">— Select category —</option>'+CATEGORIES.map(c=>`<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
+$('genreBox').innerHTML=GENRES.map(g=>`<label class="chip"><input type="checkbox" value="${escapeHtml(g)}"><span>${escapeHtml(g)}</span></label>`).join('');
+$('statusInput').innerHTML=STATUSES.map(s=>`<option>${s}</option>`).join('');
+
+const extras = ()=>({
+  category:$('categoryInput').value||null,
+  genres:[...document.querySelectorAll('#genreBox input:checked')].map(i=>i.value),
+  director:$('directorInput').value.trim()||null, cast:$('castInput').value.trim()||null,
+  platform:$('platformInput').value.trim()||null, status:$('statusInput').value,
+  review:$('reviewInput').value.trim()||null
+});
+const tagsLine = en=>{ const t=[en.category,...(en.genres||[])].filter(Boolean); return t.length?`<div class="chips-line">${t.map(x=>`<span class="tag">${escapeHtml(x)}</span>`).join('')}</div>`:''; };
+const fmtDT = t=>new Date(t).toLocaleString([], {dateStyle:'medium', timeStyle:'short'});
+
+// ---- edit
+let editingId = null;
+function setType(t){ currentType=t; document.querySelectorAll('.type-toggle button').forEach(b=>b.classList.toggle('active', b.dataset.type===t)); updateTypeFieldVisibility(); }
+function resetForm(){
+  $('entryForm').reset(); editingId=null;
+  $('formTitle').textContent='Add a New Entry'; $('addBtn').textContent='Add to Watch List'; $('cancelEdit').style.display='none';
+  $('dateInput').value=new Date().toISOString().split('T')[0]; ratingInput.value=7; ratingVal.textContent='7.0'; setType('movie');
+}
+$('cancelEdit').onclick = resetForm;
+function startEdit(id){
+  const en = entries.find(e=>e.id===id); if(!en) return;
+  editingId = id; setType(en.type);
+  $('titleInput').value=en.title; $('yearInput').value=en.year; $('subtitleInput').value=en.subtitle||'';
+  $('seasonInput').value=en.season||''; $('partInput').value=en.part||''; $('dateInput').value=en.date||'';
+  ratingInput.value=en.rating; ratingVal.textContent=en.rating.toFixed(1); $('favInput').checked=!!en.fav;
+  $('categoryInput').value=en.category||''; $('statusInput').value=en.status||'Watched';
+  $('directorInput').value=en.director||''; $('castInput').value=en.cast||''; $('platformInput').value=en.platform||''; $('reviewInput').value=en.review||'';
+  document.querySelectorAll('#genreBox input').forEach(i=>i.checked=(en.genres||[]).includes(i.value));
+  $('formTitle').textContent='Edit Entry'; $('addBtn').textContent='Save Changes'; $('cancelEdit').style.display='';
+  closeDetail(); modalOverlay.classList.remove('open');
+  $('formTitle').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+// ---- delete confirmation
+let confirmYes = null;
+function askConfirm(msg, yes){ $('confirmMsg').textContent=msg; confirmYes=yes; $('confirmOverlay').classList.add('open'); }
+$('confirmNo').onclick = ()=>$('confirmOverlay').classList.remove('open');
+$('confirmYes').onclick = ()=>{ $('confirmOverlay').classList.remove('open'); if(confirmYes) confirmYes(); };
+
+// ---- detail view + comments
+let detailId = null, editingComment = null;
+function closeDetail(){ detailId=null; editingComment=null; $('detailOverlay').classList.remove('open'); }
+function openDetail(id){ detailId=id; editingComment=null; renderDetail(); $('detailOverlay').classList.add('open'); }
+const drow = (l,v)=>v?`<div class="drow"><b>${l}</b>${escapeHtml(v)}</div>`:'';
+function renderDetail(){
+  const en = entries.find(e=>e.id===detailId);
+  if(!en){ closeDetail(); return; }
+  const draft = $('newComment') ? $('newComment').value : '';
+  const cm = (en.comments||[]).slice().sort((a,b)=>b.at-a.at);
+  const cmHtml = cm.map(c=> editingComment===c.id
+    ? `<div class="cmt"><textarea id="editCmtText">${escapeHtml(c.text)}</textarea><div class="dactions"><button class="ghost" data-act="ccancel">Cancel</button><button class="primary" data-act="csave" data-cid="${c.id}">Save</button></div></div>`
+    : `<div class="cmt"><div class="ctext">${escapeHtml(c.text)}</div><div class="cmeta"><span>${fmtDT(c.at)}${c.edited?' · edited':''}</span><span><button data-act="cedit" data-cid="${c.id}">Edit</button> <button data-act="cdel" data-cid="${c.id}">Delete</button></span></div></div>`
+  ).join('') || '<div class="empty-note">No comments yet.</div>';
+  $('detailBody').innerHTML = `
+    <div class="panel-head"><h2>${displayTitle(en)}</h2><button class="modal-close" data-act="dClose">Close ✕</button></div>
+    <div class="dtop">
+      ${en.poster?`<img src="${en.poster}" alt="">`:''}
+      <div class="dinfo">
+        <div class="chips-line"><span class="tag ${en.type==='series'?'series':''}">${en.type==='series'?'Series':'Movie'}</span>${en.fav?'<span class="star">★ Favorite</span>':''}</div>
+        ${tagsLine(en)}
+        ${drow('Rating', en.rating.toFixed(1)+' / 10')}${drow('Status', en.status||'Watched')}
+        ${drow(en.type==='series'?'Season':'Part', en.type==='series'?en.season:en.part)}
+        ${drow('Director', en.director)}${drow('Cast', en.cast)}${drow('Platform', en.platform)}${drow('Watched on', formatDate(en.date))}
+      </div>
+    </div>
+    ${en.review?`<div class="dlabel">CRITIC NOTES</div><div class="review">${escapeHtml(en.review)}</div>`:''}
+    <div class="dlabel">COMMENTS (${cm.length})</div>
+    ${cmHtml}
+    <textarea id="newComment" placeholder="Add a comment (rewatch thoughts, trivia, things to remember)…"></textarea>
+    <div class="dactions">
+      <button class="primary" data-act="addComment">Add Comment</button><span style="flex:1"></span>
+      <button class="ghost" data-act="dEdit">✎ Edit Entry</button><button class="ghost danger" data-act="dDel">Delete</button>
+    </div>`;
+  $('newComment').value = draft;
+}
+$('detailBody').addEventListener('click', e=>{
+  const t = e.target.closest('button'); if(!t) return;
+  const en = entries.find(x=>x.id===detailId); if(!en) return;
+  const a = t.dataset.act, id = t.dataset.cid, list = en.comments||[];
+  const save = c=>saveEntry({...en, comments:c});
+  if(a==='dClose') closeDetail();
+  else if(a==='dEdit') startEdit(en.id);
+  else if(a==='dDel') deleteEntry(en.id);
+  else if(a==='addComment'){ const v=$('newComment').value.trim(); if(!v) return; $('newComment').value=''; save([...list,{id:uid(),text:v,at:Date.now()}]); }
+  else if(a==='cedit'){ editingComment=id; renderDetail(); }
+  else if(a==='ccancel'){ editingComment=null; renderDetail(); }
+  else if(a==='csave'){ const v=$('editCmtText').value.trim(); if(!v) return; editingComment=null; save(list.map(c=>c.id===id?{...c,text:v,edited:true}:c)); }
+  else if(a==='cdel') askConfirm('Delete this comment?', ()=>save(list.filter(c=>c.id!==id)));
+});
+$('detailOverlay').addEventListener('click', e=>{ if(e.target===$('detailOverlay')) closeDetail(); });
+$('fullTableBody').addEventListener('click', e=>{ const tr=e.target.closest('tr[data-id]'); if(tr) openDetail(tr.dataset.id); });
+
+function renderAll(){ renderCards(); renderDashboard(); if(detailId) renderDetail(); }
 
 startSync();
 </script>
