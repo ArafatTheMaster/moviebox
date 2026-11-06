@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Night Reel — Your Watch Log</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:wght@500;700&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
     --bg: #0E0C0A;
@@ -127,13 +127,13 @@
   .search-box::before{content:"🔎"; position:absolute; left:11px; top:50%; transform:translateY(-50%); font-size:13px; opacity:.6;}
   .search-hint{font-size:11.5px; color:var(--stone); margin-top:6px; font-family:'Space Mono',monospace;}
 
-  .list-scroll{max-height:440px; overflow-y:auto; padding-right:6px;}
+  .list-scroll{max-height:640px; overflow-y:auto; padding-right:6px;}
   .list-scroll::-webkit-scrollbar{width:8px;}
   .list-scroll::-webkit-scrollbar-track{background:#12100D; border-radius:8px;}
   .list-scroll::-webkit-scrollbar-thumb{background:var(--line); border-radius:8px;}
   .list-scroll::-webkit-scrollbar-thumb:hover{background:var(--gold-dim);}
 
-  #cardsRow{display:flex; flex-direction:column; gap:14px;}
+  #cardsRow{display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:14px;}
   .ticket{display:flex; background:#12100D; border:1px solid var(--line); border-radius:10px; overflow:hidden; position:relative; animation:slideIn .35s ease;}
   @keyframes slideIn{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
   .ticket .poster{width:64px; min-width:64px; height:96px; object-fit:cover; background:#221C19;}
@@ -206,6 +206,56 @@
   button.primary.danger{background:var(--velvet);color:var(--cream)}
   ::placeholder{color:#5c5448;}
   footer{text-align:center; color:var(--stone); font-size:11.5px; margin-top:30px; font-family:'Space Mono',monospace;}
+
+  /* tabs */
+  .tabs{position:sticky;top:10px;z-index:50;display:flex;gap:4px;width:max-content;max-width:100%;margin:0 auto 26px;padding:5px;border-radius:40px;background:rgba(18,18,23,.85);border:1px solid var(--line);backdrop-filter:blur(14px);box-shadow:0 10px 30px rgba(0,0,0,.5)}
+  .tabs button{background:none;border:none;color:var(--stone);padding:10px 22px;border-radius:30px;font-family:inherit;font-size:13.5px;font-weight:600;letter-spacing:.04em;cursor:pointer;transition:.2s}
+  .tabs button.on{background:linear-gradient(135deg,#E6CC94,#B8924F);color:#1a1408}
+  .tabs b{font-weight:600;opacity:.75;margin-left:5px}
+  #tabTodo{display:none}
+  body[data-tab=todo] #tabTodo{display:block}
+  body[data-tab=todo] #tabLog{display:none}
+  .todo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-top:14px}
+  .tcard{display:flex;gap:12px;padding:12px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(160deg,rgba(255,255,255,.06),rgba(255,255,255,.02));position:relative;transition:.25s}
+  .tcard:hover{transform:translateY(-3px);border-color:rgba(205,174,114,.5)}
+  .tcard img,.tcard .noimg{width:74px;height:108px;object-fit:cover;border-radius:10px;background:#1a1a20;flex-shrink:0}
+  .tcard .ti{font-family:var(--serif);font-size:16px;line-height:1.25;padding-right:34px}
+  .tcard .tm{font-size:12px;color:var(--stone);margin:3px 0 6px}
+  .tcard .tn{font-size:12.5px;color:#cfc8d6;margin-top:6px;white-space:pre-wrap}
+  .tcard .tact{display:flex;gap:6px;margin-top:9px;flex-wrap:wrap}
+  .tcard .tact button{font-size:11.5px;padding:5px 10px;cursor:pointer}
+  .tcard .tx{position:absolute;top:8px;right:8px;background:none;border:none;color:var(--stone);cursor:pointer;font-size:14px}
+  .tcard .tx:hover{color:#e08a8a}
+  .prio{display:inline-block;font-size:10.5px;padding:2px 8px;border-radius:20px;border:1px solid var(--line);letter-spacing:.05em}
+  .prio.High{color:#f0a0b0;border-color:#8C2F4B;background:rgba(140,47,75,.2)}
+  .prio.Low{opacity:.7}
+
+  /* ===== CINEMA NOIR LUXURY ===== */
+  :root{--bg:#0B0907;--panel:#15110E;--panel-2:#1C1612;--gold:#D4AF37;--gold-dim:#8f7726;--velvet:#A13D3D;--cream:#F2E9D8;--stone:#8A8074;--line:#2c2318;--serif:'Bebas Neue',sans-serif}
+  body{background:radial-gradient(ellipse at 50% -20%,rgba(212,175,55,.11),transparent 55%),radial-gradient(ellipse at 0% 100%,rgba(161,61,61,.10),transparent 50%),var(--bg);background-attachment:fixed}
+  header{padding:26px 10px 30px}
+  header::before,header::after{content:"";display:block;height:1px;max-width:340px;margin:0 auto;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+  header::before{margin-bottom:20px} header::after{margin-top:20px}
+  .eyebrow{letter-spacing:.45em}
+  h1{font-size:clamp(48px,9vw,90px);letter-spacing:.12em;text-shadow:0 0 34px rgba(212,175,55,.3)}
+  h1 span{color:var(--gold)}
+  .panel{background:linear-gradient(180deg,#191410,#120f0c);border:1px solid var(--line);border-top:1px solid rgba(212,175,55,.38);border-radius:14px;box-shadow:0 24px 60px rgba(0,0,0,.55)}
+  .panel h2,.panel-head h2{font-family:'Bebas Neue',sans-serif;font-weight:400;letter-spacing:.12em;font-size:24px;color:var(--gold)}
+  button.primary{background:linear-gradient(180deg,#e4c24e,#b8921f);color:#14100a;font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:12.5px;border:none;border-radius:8px;box-shadow:0 6px 20px rgba(212,175,55,.22)}
+  button.primary:hover{filter:brightness(1.08)}
+  button.ghost{border-color:rgba(212,175,55,.5);color:var(--gold);border-radius:8px;letter-spacing:.06em}
+  button.ghost:hover{background:rgba(212,175,55,.1)}
+  .stat .num{font-family:'Bebas Neue',sans-serif;color:var(--gold)}
+  .ticket{border-radius:12px;border:1px solid var(--line);transition:transform .25s,box-shadow .25s,border-color .25s}
+  .ticket:hover{transform:translateY(-3px);border-color:rgba(212,175,55,.55);box-shadow:0 14px 34px rgba(0,0,0,.55)}
+  .modal-box{background:#14100d;border:1px solid var(--line);border-top:1px solid rgba(212,175,55,.4);border-radius:16px}
+  .tabs{position:sticky;top:0;width:100%;max-width:none;justify-content:center;gap:36px;margin:0 0 26px;padding:0;border:none;border-bottom:1px solid var(--line);border-radius:0;box-shadow:none;background:rgba(11,9,7,.93);backdrop-filter:blur(6px)}
+  .tabs button{padding:16px 6px;border-radius:0;background:none;color:var(--stone);font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:.16em;font-weight:400;border-bottom:2px solid transparent}
+  .tabs button.on{background:none;color:var(--gold);border-bottom-color:var(--gold)}
+  .tabs b{font-family:'Space Mono',monospace;font-size:11px;background:var(--velvet);color:var(--cream);padding:2px 7px;border-radius:10px;margin-left:8px;vertical-align:middle;opacity:1}
+  .tcard{background:linear-gradient(180deg,#1b1511,#14100d);border-radius:12px}
+  .tcard .ti{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:.05em;font-weight:400}
+  .tcard img,.tcard .noimg{width:80px;height:118px}
 </style>
 </head>
 <body>
@@ -218,6 +268,12 @@
     <div class="bulb-row" id="bulbRow"></div>
   </header>
 
+  <nav class="tabs"><button class="on" data-tab="log">🎬 Watched Log</button><button data-tab="todo">🕒 To Watch<b id="todoCount">0</b></button></nav>
+<div id="tabLog">
+  <div class="panel" id="importPanel" style="display:none">
+    <div class="panel-head"><h2>📥 Import Your Finished List</h2><button class="primary" id="importBtn" type="button">Import <span id="importCount">0</span> titles</button></div>
+    <div id="importMsg" style="color:var(--stone);font-size:13.5px;margin-top:8px;line-height:1.5">Your uploaded list is ready: movies, series, categories and your star marks (★ ×2 = rating). Titles with no stars show "—" until you rate them.</div>
+  </div>
   <div class="panel">
     <h2 id="formTitle">Add a New Entry</h2>
     <form id="entryForm" autocomplete="off">
@@ -248,9 +304,9 @@
         <label>Part Number</label>
         <input type="number" id="partInput" placeholder="e.g. 2" min="1" max="50">
       </div>
-      <div class="field season-field" id="seasonField">
-        <label>Season Number</label>
-        <input type="number" id="seasonInput" placeholder="e.g. 1" min="1" max="50">
+      <div class="field season-field full" id="seasonField">
+        <label>Seasons Watched <span style="opacity:.6;">(select all that apply)</span></label>
+        <div class="chips" id="seasonBox"></div>
       </div>
       <div class="field">
         <label>Date Watched</label>
@@ -330,7 +386,38 @@
     </div>
   </div>
 
-  <footer>NIGHT REEL — every entry is saved to your account</footer>
+  <div class="panel" id="dataPanel">
+    <h2>Backup &amp; Transfer</h2>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:6px">
+      <button class="ghost" id="exportJson" type="button">⬇ Export JSON (full backup)</button>
+      <button class="ghost" id="exportCsv" type="button">⬇ Export CSV (Excel)</button>
+      <button class="primary" id="importFileBtn" type="button">⬆ Import file</button>
+      <input type="file" id="importFile" accept=".json,.csv,.txt" style="display:none">
+    </div>
+    <div id="dataMsg" style="color:var(--stone);font-size:13px;margin-top:10px;line-height:1.5">JSON = complete backup (comments and To-Watch list included). CSV opens in Excel / Google Sheets. Import accepts .json, .csv, or a plain .txt list (one title per line). Duplicates are skipped.</div>
+  </div>
+</div>
+<div id="tabTodo">
+  <div class="panel">
+    <h2 id="todoFormTitle">Add to To-Watch List</h2>
+    <form id="todoForm" autocomplete="off">
+      <div class="field full"><label>Title</label><input type="text" id="tTitle" placeholder="Movie or series you want to watch" required></div>
+      <div class="field"><label>Year <span style="opacity:.6">(optional)</span></label><input type="number" id="tYear" min="1888" max="2100"></div>
+      <div class="field"><label>Type</label><select id="tType"><option value="movie">🎬 Movie</option><option value="series">📺 Series</option></select></div>
+      <div class="field"><label>Category</label><select id="tCat"></select></div>
+      <div class="field"><label>Priority</label><select id="tPrio"><option>High</option><option selected>Normal</option><option>Low</option></select></div>
+      <div class="field full"><label>Note <span style="opacity:.6">(who recommended, why, where to watch…)</span></label><input type="text" id="tNote"></div>
+      <div class="submit-row"><button type="button" class="ghost" id="tCancel" style="display:none">Cancel edit</button><span id="tMsg"></span><button class="primary" type="submit" id="tBtn">Add to To-Watch</button></div>
+    </form>
+  </div>
+  <div class="panel">
+    <div class="panel-head"><h2>Your To-Watch List</h2>
+      <select id="tFilter" style="width:auto"><option value="all">All</option><option value="movie">Movies</option><option value="series">Series</option></select></div>
+    <div class="todo-grid" id="todoGrid"></div>
+    <div class="empty-note" id="todoEmpty">Nothing here yet — add the movies and series you plan to watch.</div>
+  </div>
+</div>
+<footer>NIGHT REEL — every entry is saved to your account</footer>
 </div>
 
 <!-- FULL LIST MODAL -->
@@ -370,7 +457,7 @@
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
-  getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot
+  getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot, writeBatch
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -452,7 +539,7 @@ async function fetchPoster(title, year, type){
   const yKey = type==='series' ? 'first_air_date_year' : 'year';
   for(const useYear of [true, false]){
     try{
-      const url = `https://api.themoviedb.org/3/search/${kind}?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(title)}` + (useYear ? `&${yKey}=${encodeURIComponent(year)}` : '');
+      const url = `https://api.themoviedb.org/3/search/${kind}?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(title)}` + (useYear && year ? `&${yKey}=${encodeURIComponent(year)}` : '');
       const res = await fetch(url);
       const data = await res.json();
       if(!res.ok){ lastPosterError = data.status_message || ('HTTP ' + res.status); return null; }
@@ -525,8 +612,8 @@ suggestList.addEventListener('click', (e)=>{
   // suggest next part/season number based on existing entries with same title+type
   const sameTitleEntries = entries.filter(e=> e.title.toLowerCase()===title.toLowerCase() && e.type===type);
   if(type==='series'){
-    const maxSeason = Math.max(0, ...sameTitleEntries.map(e=>parseInt(e.season)||0));
-    document.getElementById('seasonInput').value = maxSeason ? maxSeason+1 : '';
+    const maxSeason = Math.max(0, ...sameTitleEntries.flatMap(e=>seasonList(e)));
+    setSeasonChips(maxSeason ? [maxSeason+1] : []);
   } else {
     const maxPart = Math.max(0, ...sameTitleEntries.map(e=>parseInt(e.part)||0));
     document.getElementById('partInput').value = maxPart ? maxPart+1 : '';
@@ -543,7 +630,7 @@ document.getElementById('entryForm').addEventListener('submit', async (e)=>{
   const title = document.getElementById('titleInput').value.trim();
   const year = document.getElementById('yearInput').value.trim();
   const subtitle = document.getElementById('subtitleInput').value.trim();
-  const season = document.getElementById('seasonInput').value;
+  const seasons = [...document.querySelectorAll('#seasonBox input:checked')].map(i=>+i.value).sort((a,b)=>a-b);
   const part = document.getElementById('partInput').value;
   const rating = parseFloat(ratingInput.value);
   const date = document.getElementById('dateInput').value || new Date().toISOString().split('T')[0];
@@ -566,13 +653,15 @@ document.getElementById('entryForm').addEventListener('submit', async (e)=>{
   const entry = {
     id: old ? old.id : uid(),
     title, year, subtitle: subtitle || null, type: currentType,
-    season: currentType==='series' ? (season || null) : null,
+    season: currentType==='series' && seasons.length ? seasons[seasons.length-1] : null,
+    seasons: currentType==='series' ? seasons : [],
     part: currentType==='movie' ? (part || null) : null,
     rating, date, fav, poster, ...extras(),
     comments: old ? (old.comments||[]) : [],
     createdAt: old ? old.createdAt : Date.now()
   };
   await saveEntry(entry);
+  if(pendingTodoId){ try{ await deleteDoc(doc(db,'watchlist',pendingTodoId)); }catch(e){ console.error(e); } pendingTodoId=null; }
 
   resetForm();
   document.getElementById('dateInput').value = new Date().toISOString().split('T')[0];
@@ -615,8 +704,8 @@ function computeWatchOrder(){
 
 function displayTitle(en){
   return en.subtitle
-    ? `${escapeHtml(en.title)}: <span class="subtitle">${escapeHtml(en.subtitle)}</span> (${escapeHtml(en.year)})`
-    : `${escapeHtml(en.title)} (${escapeHtml(en.year)})`;
+    ? `${escapeHtml(en.title)}: <span class="subtitle">${escapeHtml(en.subtitle)}</span>${en.year?` (${escapeHtml(en.year)})`:''}`
+    : `${escapeHtml(en.title)}${en.year?` (${escapeHtml(en.year)})`:''}`;
 }
 
 function renderCards(){
@@ -643,7 +732,7 @@ function renderCards(){
     const div = document.createElement('div');
     div.className = 'ticket';
     let metaExtra = '';
-    if(en.type==='series' && en.season) metaExtra = ` · Season ${en.season}`;
+    if(en.type==='series' && hasSeasons(en)) metaExtra = ' · ' + seasonLabel(seasonList(en));
     if(en.type==='movie' && en.part) metaExtra = ` · Part ${en.part}`;
     div.innerHTML = `
       <button class="edit" title="Edit">✎</button><button class="del" title="Delete">✕</button>
@@ -659,7 +748,7 @@ function renderCards(){
         ${tagsLine(en)}
       </div>
       <div class="ratingbox">
-        <div class="rv">${en.rating.toFixed(1)}</div>
+        <div class="rv">${rt(en.rating)}</div>
         <div class="r10">/ 10</div>
       </div>
     `;
@@ -752,9 +841,9 @@ function renderDashboard(){
         ${en.poster ? `<img class="poster-sm" src="${en.poster}">` : `<div class="poster-sm"></div>`}
         <div class="info">
           <div class="t">${displayTitle(en)}</div>
-          <div class="m">${en.type==='series' ? 'Series' + (en.season ? ' · Season '+en.season : '') : 'Movie' + (en.part ? ' · Part '+en.part : '')}</div>
+          <div class="m">${en.type==='series' ? 'Series' + (hasSeasons(en) ? ' · '+seasonLabel(seasonList(en)) : '') : 'Movie' + (en.part ? ' · Part '+en.part : '')}</div>
         </div>
-        <div class="r">${en.rating.toFixed(1)}</div>
+        <div class="r">${rt(en.rating)}</div>
       `;
       favList.appendChild(item);
     });
@@ -769,13 +858,13 @@ function renderFullTable(){
   body.innerHTML = sorted.map(en=>{
     const order = orderMap[en.id];
     const orderLabel = en.type==='series' ? `Series #${order}` : `Movie #${order}`;
-    const partSeason = en.type==='series' ? (en.season ? 'S'+en.season : '—') : (en.part ? 'P'+en.part : '—');
+    const partSeason = en.type==='series' ? (hasSeasons(en) ? seasonLabel(seasonList(en)).replace(/^Seasons? /,'S') : '—') : (en.part ? 'P'+en.part : '—');
     return `
       <tr data-id="${en.id}" style="cursor:pointer">
         <td>${displayTitle(en)}${en.fav ? ' <span class="star">★</span>' : ''}</td>
         <td><span class="ttag ${en.type==='series'?'series':''}">${en.type==='series'?'Series':'Movie'}</span></td>
         <td>${partSeason}</td>
-        <td class="rt">${en.rating.toFixed(1)}/10</td>
+        <td class="rt">${en.rating>0?en.rating.toFixed(1)+'/10':'—'}</td>
         <td>${formatDate(en.date)}</td>
         <td class="ord">${orderLabel}</td>
       </tr>
@@ -819,7 +908,7 @@ const fmtDT = t=>new Date(t).toLocaleString([], {dateStyle:'medium', timeStyle:'
 let editingId = null;
 function setType(t){ currentType=t; document.querySelectorAll('.type-toggle button').forEach(b=>b.classList.toggle('active', b.dataset.type===t)); updateTypeFieldVisibility(); }
 function resetForm(){
-  $('entryForm').reset(); editingId=null;
+  $('entryForm').reset(); editingId=null; pendingTodoId=null;
   $('formTitle').textContent='Add a New Entry'; $('addBtn').textContent='Add to Watch List'; $('cancelEdit').style.display='none';
   $('dateInput').value=new Date().toISOString().split('T')[0]; ratingInput.value=7; ratingVal.textContent='7.0'; setType('movie');
 }
@@ -827,8 +916,8 @@ $('cancelEdit').onclick = resetForm;
 function startEdit(id){
   const en = entries.find(e=>e.id===id); if(!en) return;
   editingId = id; setType(en.type);
-  $('titleInput').value=en.title; $('yearInput').value=en.year; $('subtitleInput').value=en.subtitle||'';
-  $('seasonInput').value=en.season||''; $('partInput').value=en.part||''; $('dateInput').value=en.date||'';
+  $('titleInput').value=en.title; $('yearInput').value=en.year; $('subtitleInput').value=(en.type==='series'&&isSeasonSub(en.subtitle))?'':(en.subtitle||'');
+  setSeasonChips(en.type==='series'?seasonList(en):[]); $('partInput').value=en.part||''; $('dateInput').value=en.date||'';
   ratingInput.value=en.rating; ratingVal.textContent=en.rating.toFixed(1); $('favInput').checked=!!en.fav;
   $('categoryInput').value=en.category||''; $('statusInput').value=en.status||'Watched';
   $('directorInput').value=en.director||''; $('castInput').value=en.cast||''; $('platformInput').value=en.platform||''; $('reviewInput').value=en.review||'';
@@ -840,7 +929,7 @@ function startEdit(id){
 
 // ---- delete confirmation
 let confirmYes = null;
-function askConfirm(msg, yes){ $('confirmMsg').textContent=msg; confirmYes=yes; $('confirmOverlay').classList.add('open'); }
+function askConfirm(msg, yes, label){ $('confirmYes').textContent=label||'Yes, delete'; $('confirmMsg').textContent=msg; confirmYes=yes; $('confirmOverlay').classList.add('open'); }
 $('confirmNo').onclick = ()=>$('confirmOverlay').classList.remove('open');
 $('confirmYes').onclick = ()=>{ $('confirmOverlay').classList.remove('open'); if(confirmYes) confirmYes(); };
 
@@ -865,8 +954,8 @@ function renderDetail(){
       <div class="dinfo">
         <div class="chips-line"><span class="tag ${en.type==='series'?'series':''}">${en.type==='series'?'Series':'Movie'}</span>${en.fav?'<span class="star">★ Favorite</span>':''}</div>
         ${tagsLine(en)}
-        ${drow('Rating', en.rating.toFixed(1)+' / 10')}${drow('Status', en.status||'Watched')}
-        ${drow(en.type==='series'?'Season':'Part', en.type==='series'?en.season:en.part)}
+        ${drow('Rating', (en.rating>0?en.rating.toFixed(1)+' / 10':'Not rated'))}${drow('Status', en.status||'Watched')}
+        ${drow(en.type==='series'?'Seasons':'Part', en.type==='series'?seasonLabel(seasonList(en)).replace(/^Seasons? /,''):en.part)}
         ${drow('Director', en.director)}${drow('Cast', en.cast)}${drow('Platform', en.platform)}${drow('Watched on', formatDate(en.date))}
       </div>
     </div>
@@ -897,7 +986,190 @@ $('detailBody').addEventListener('click', e=>{
 $('detailOverlay').addEventListener('click', e=>{ if(e.target===$('detailOverlay')) closeDetail(); });
 $('fullTableBody').addEventListener('click', e=>{ const tr=e.target.closest('tr[data-id]'); if(tr) openDetail(tr.dataset.id); });
 
-function renderAll(){ renderCards(); renderDashboard(); if(detailId) renderDetail(); }
+// ================= TO WATCH LIST =================
+document.body.dataset.tab='log';
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{
+  document.body.dataset.tab=b.dataset.tab;
+  document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  window.scrollTo({top:0,behavior:'smooth'});
+});
+$('tCat').innerHTML='<option value="">— Category —</option>'+CATEGORIES.map(c=>`<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
+const todoCol = collection(db,'watchlist');
+let todos = [], editingTodo = null, pendingTodoId = null;
+onSnapshot(todoCol, snap=>{
+  todos = snap.docs.map(d=>d.data()).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+  renderTodos();
+}, err=>console.error('watchlist sync error', err));
+const saveTodo = async t=>{ try{ await setDoc(doc(db,'watchlist',t.id), t); }catch(e){ console.error(e); } };
+function resetTodoForm(){ $('todoForm').reset(); editingTodo=null; $('todoFormTitle').textContent='Add to To-Watch List'; $('tBtn').textContent='Add to To-Watch'; $('tCancel').style.display='none'; }
+$('tCancel').onclick = resetTodoForm;
+$('todoForm').addEventListener('submit', async e=>{
+  e.preventDefault();
+  const title=$('tTitle').value.trim(); if(!title) return;
+  const year=$('tYear').value||'', type=$('tType').value, old=editingTodo?todos.find(x=>x.id===editingTodo):null;
+  $('tBtn').disabled=true;
+  let poster = old ? old.poster : null;
+  if(!old || old.title!==title || old.year!==year || old.type!==type){
+    $('tMsg').textContent='Fetching poster…';
+    const r = await fetchPoster(title, year, type); poster = r ? r.poster : null;
+  }
+  await saveTodo({ id: old?old.id:uid(), title, year, type, category:$('tCat').value||null, priority:$('tPrio').value, note:$('tNote').value.trim()||null, poster, createdAt: old?old.createdAt:Date.now() });
+  $('tMsg').textContent=''; $('tBtn').disabled=false; resetTodoForm();
+});
+$('tFilter').onchange = renderTodos;
+function renderTodos(){
+  $('todoCount').textContent = todos.length;
+  const f=$('tFilter').value, list=todos.filter(t=>f==='all'||t.type===f);
+  const rank={High:0,Normal:1,Low:2};
+  list.sort((a,b)=>(rank[a.priority]-rank[b.priority])||((b.createdAt||0)-(a.createdAt||0)));
+  $('todoEmpty').style.display = list.length?'none':'block';
+  $('todoGrid').innerHTML = list.map(t=>`<div class="tcard">
+    ${t.poster?`<img src="${t.poster}" alt="">`:'<div class="noimg"></div>'}
+    <div style="flex:1;min-width:0"><div class="ti">${escapeHtml(t.title)}${t.year?` <span style="color:var(--stone);font-size:13px">(${escapeHtml(String(t.year))})</span>`:''}</div>
+      <div class="tm">${t.type==='series'?'📺 Series':'🎬 Movie'}${t.category?' · '+escapeHtml(t.category):''}</div>
+      <span class="prio ${t.priority}">${t.priority}</span>
+      ${t.note?`<div class="tn">${escapeHtml(t.note)}</div>`:''}
+      <div class="tact"><button class="primary" data-a="watched" data-id="${t.id}">✓ Watched</button><button class="ghost" data-a="edit" data-id="${t.id}">✎ Edit</button></div></div>
+    <button class="tx" data-a="del" data-id="${t.id}" title="Remove">✕</button></div>`).join('');
+}
+$('todoGrid').addEventListener('click', e=>{
+  const b=e.target.closest('button'); if(!b) return;
+  const t=todos.find(x=>x.id===b.dataset.id); if(!t) return;
+  if(b.dataset.a==='del') askConfirm(`Remove "${t.title}" from your To-Watch list?`, async ()=>{ try{ await deleteDoc(doc(db,'watchlist',t.id)); }catch(e){ console.error(e); } });
+  else if(b.dataset.a==='edit'){
+    editingTodo=t.id; $('tTitle').value=t.title; $('tYear').value=t.year||''; $('tType').value=t.type; $('tCat').value=t.category||''; $('tPrio').value=t.priority; $('tNote').value=t.note||'';
+    $('todoFormTitle').textContent='Edit To-Watch'; $('tBtn').textContent='Save Changes'; $('tCancel').style.display=''; window.scrollTo({top:0,behavior:'smooth'});
+  } else if(b.dataset.a==='watched'){
+    // move into the Watched Log form, prefilled; removed from To-Watch once saved
+    document.querySelector('.tabs [data-tab=log]').click();
+    resetForm(); setType(t.type); pendingTodoId=t.id;
+    $('titleInput').value=t.title; $('yearInput').value=t.year||''; $('categoryInput').value=t.category||''; $('platformInput').value='';
+    $('formTitle').textContent='Log "'+t.title+'" as watched'; $('formTitle').scrollIntoView({behavior:'smooth',block:'start'});
+  }
+});
+
+// ================= SEASONS =================
+$('seasonBox').innerHTML = Array.from({length:20},(_,i)=>`<label class="chip"><input type="checkbox" value="${i+1}"><span>Season ${i+1}</span></label>`).join('');
+function setSeasonChips(list){ document.querySelectorAll('#seasonBox input').forEach(i=>i.checked=list.includes(+i.value)); }
+const isSeasonSub = t=>/^\s*(season|s\d)/i.test(t||'');
+function parseSeasons(t){
+  const out=new Set(), rng=/(\d+)\s*[-–]\s*S?(\d+)/g; let r;
+  while((r=rng.exec(t))){ for(let i=+r[1]; i<=+r[2] && i<=60; i++) out.add(i); }
+  (t.replace(rng,' ').match(/\d+/g)||[]).forEach(n=>{ if(+n>0 && +n<=60) out.add(+n); });
+  return [...out].sort((a,b)=>a-b);
+}
+function seasonList(en){
+  if(Array.isArray(en.seasons) && en.seasons.length) return en.seasons.map(Number).sort((a,b)=>a-b);
+  if(en.season) return [Number(en.season)];
+  return isSeasonSub(en.subtitle) ? parseSeasons(en.subtitle) : [];
+}
+const hasSeasons = en=>(en.seasons&&en.seasons.length) || en.season;
+function seasonLabel(l){
+  if(!l.length) return '';
+  const rs=[]; let a=l[0], b=a;
+  for(const n of l.slice(1)){ if(n===b+1) b=n; else { rs.push([a,b]); a=b=n; } }
+  rs.push([a,b]);
+  return (l.length>1?'Seasons ':'Season ') + rs.map(([x,y])=>x===y?x:(y===x+1?x+', '+y:x+'–'+y)).join(', ');
+}
+
+// ================= EXPORT / IMPORT FILES =================
+function download(name,text,mime){ const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([text],{type:mime})); a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),1500); }
+const stamp = ()=>new Date().toISOString().slice(0,10);
+$('exportJson').onclick = ()=>download(`night-reel-backup-${stamp()}.json`, JSON.stringify({app:'night-reel',exportedAt:new Date().toISOString(),entries,watchlist:todos},null,2), 'application/json');
+const CSV_COLS=['title','year','type','subtitle','seasons','category','genres','rating','date','fav','status','director','cast','platform','review'];
+const csvCell = v=>{ v=v==null?'':String(v); return /[",\n\r]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v; };
+$('exportCsv').onclick = ()=>{
+  const rows=[CSV_COLS.join(',')].concat(entries.map(e=>CSV_COLS.map(c=>csvCell(c==='genres'?(e.genres||[]).join(';'):c==='fav'?(e.fav?'yes':''):c==='seasons'?seasonList(e).join(';'):e[c])).join(',')));
+  download(`night-reel-${stamp()}.csv`, '\ufeff'+rows.join('\r\n'), 'text/csv');
+};
+function parseCSV(t){
+  const rows=[]; let row=[],cur='',q=false; t=t.replace(/^\ufeff/,'');
+  for(let i=0;i<t.length;i++){ const c=t[i];
+    if(q){ if(c==='"'){ if(t[i+1]==='"'){cur+='"';i++;} else q=false; } else cur+=c; }
+    else if(c==='"') q=true;
+    else if(c===','){ row.push(cur); cur=''; }
+    else if(c==='\n'||c==='\r'){ if(c==='\r'&&t[i+1]==='\n') i++; row.push(cur); cur=''; if(row.some(x=>x!=='')) rows.push(row); row=[]; }
+    else cur+=c; }
+  row.push(cur); if(row.some(x=>x!=='')) rows.push(row); return rows;
+}
+function parseTxt(t){
+  return t.split(/\r?\n/).map(l=>l.trim()).filter(l=>l&&!/^[=\-]+$/.test(l)&&!/:$/.test(l)).map(l=>{
+    l=l.replace(/^\d+\.\s+/,''); let year=''; const m=l.match(/[\(\[]\D*(\d{4})\D*[\)\]]/); if(m){ year=m[1]; l=l.replace(m[0],''); }
+    let subtitle='', type='movie'; const sm=l.match(/\s*:?\s*\b(Season\s*\d.*|S\d{1,2}\b.*)$/); if(sm){ subtitle=sm[1]; l=l.slice(0,sm.index); type='series'; }
+    return { title:l.replace(/\s+/g,' ').trim(), year, subtitle, type };
+  });
+}
+function normEntry(o){
+  const title=String(o.title||'').trim(); if(!title) return null;
+  const genres=Array.isArray(o.genres)?o.genres:String(o.genres||'').split(/[;|]/).map(x=>x.trim()).filter(Boolean);
+  const SN=(Array.isArray(o.seasons)?o.seasons:String(o.seasons||'').split(/[;|,]/)).map(Number).filter(n=>n>0).sort((a,b)=>a-b);
+  return { id:uid()+Math.random().toString(36).slice(2,5), type:o.type==='series'?'series':'movie', title, subtitle:o.subtitle||'', year:String(o.year||''), season:SN.length?SN[SN.length-1]:(o.season??null), seasons:SN, part:o.part??null,
+    date:o.date||'', rating:Math.max(0,Math.min(10,parseFloat(o.rating)||0)), fav:o.fav===true||/^(yes|true|1)$/i.test(String(o.fav||'')), poster:o.poster||null,
+    category:o.category||null, genres, director:o.director||null, cast:o.cast||null, platform:o.platform||null, status:o.status||'Watched', review:o.review||null,
+    comments:Array.isArray(o.comments)?o.comments:[], createdAt:o.createdAt||Date.now() };
+}
+async function commitDocs(col,items){ for(let s=0;s<items.length;s+=400){ const b=writeBatch(db); items.slice(s,s+400).forEach(it=>b.set(doc(db,col,it.id),it)); await b.commit(); } }
+$('importFileBtn').onclick = ()=>$('importFile').click();
+$('importFile').onchange = async e=>{
+  const f=e.target.files[0]; e.target.value=''; if(!f) return; const msg=$('dataMsg');
+  let list=[], wl=[];
+  try{
+    const text=await f.text();
+    if(/\.json$/i.test(f.name)){ const j=JSON.parse(text); list=Array.isArray(j)?j:(j.entries||[]); wl=Array.isArray(j)?[]:(j.watchlist||[]); }
+    else if(/\.csv$/i.test(f.name)){ const rows=parseCSV(text); const h=(rows.shift()||[]).map(x=>x.trim().toLowerCase()); list=rows.map(r=>Object.fromEntries(h.map((k,i)=>[k,r[i]]))); }
+    else list=parseTxt(text);
+  }catch(err){ msg.textContent='Could not read this file: '+err.message; return; }
+  const have=new Set(entries.map(x=>keyOf(x.title,x.year,x.subtitle))), haveW=new Set(todos.map(x=>keyOf(x.title,x.year,'')));
+  const fresh=[], freshW=[];
+  list.forEach((o,i)=>{ const n=normEntry(o||{}); if(!n) return; const k=keyOf(n.title,n.year,n.subtitle); if(have.has(k)) return; have.add(k); n.createdAt=(o&&o.createdAt)||Date.now()-i; fresh.push(n); });
+  wl.forEach(o=>{ if(!o||!o.title) return; const k=keyOf(o.title,o.year,''); if(haveW.has(k)) return; haveW.add(k);
+    freshW.push({ id:uid()+Math.random().toString(36).slice(2,5), title:o.title, year:o.year||'', type:o.type==='series'?'series':'movie', category:o.category||null, priority:o.priority||'Normal', note:o.note||null, poster:o.poster||null, createdAt:o.createdAt||Date.now() }); });
+  if(!fresh.length && !freshW.length){ msg.textContent='Nothing new to import — everything in this file is already in your list.'; return; }
+  askConfirm(`Import ${fresh.length} new entries${freshW.length?` and ${freshW.length} To-Watch items`:''} from "${f.name}"? Duplicates are skipped.${/\.txt$/i.test(f.name)?' Plain-text lines are added as unrated titles.':''}`, async ()=>{
+    try{
+      const need=[...fresh,...freshW].filter(x=>!x.poster); let next=0, done=0;
+      const worker=async()=>{ while(next<need.length){ const it=need[next++]; try{ const r=await fetchPoster(it.title,it.year,it.type); it.poster=r?r.poster:null; }catch(_){} msg.textContent=`Fetching posters ${++done}/${need.length}…`; } };
+      await Promise.all(Array.from({length:6},worker));
+      msg.textContent='Saving…'; await commitDocs('entries',fresh); await commitDocs('watchlist',freshW);
+      msg.textContent=`Imported ${fresh.length+freshW.length} items ✓`;
+    }catch(err){ console.error(err); msg.textContent='Import failed: '+err.message+' (check Firestore rules)'; }
+  }, 'Yes, import');
+};
+
+// ================= BULK IMPORT =================
+function rt(r){ return r>0 ? r.toFixed(1) : '—'; }
+const IMPORT_DATA = [["Journey of Love 18+","2023","movie","",0,false,"",""],["Pradhama Drishtiya Kuttakkar","2026","movie","",0,false,"",""],["Bad Genius","2017","movie","",0,false,"",""],["Mirzapur- The Movie","2026","movie","",0,false,"",""],["Welcome to the Jungle","2026","movie","",0,false,"",""],["Pressure Cooker","2026","movie","",0,false,"",""],["Qalb","2024","movie","",0,false,"",""],["The Paradise","2026","movie","",0,false,"",""],["The Buckingham Murders","2024","movie","",0,false,"",""],["Karakkam","2026","movie","",0,false,"",""],["Arrival","2016","movie","",0,false,"",""],["Main Vaapas Aaunga","2026","movie","",0,false,"",""],["Khalifa The Ruler","2026","movie","",0,false,"",""],["Michael","2026","movie","",0,false,"",""],["Speak No Evil","2024","movie","",0,false,"",""],["Together","2025","movie","",0,false,"",""],["MobLand","","series","Season 1 + 2",0,false,"",""],["Bethlehem Kudumba Unit","2026","movie","",0,false,"",""],["The Butcher's Blade","2026","movie","",0,false,"",""],["Babita Singh Reporting","2026","movie","",0,false,"",""],["Insidious 6- Out of the Further","2026","movie","",0,false,"",""],["Mandaadi","2026","movie","",0,false,"",""],["Spider Man Brand New Day","2026","movie","",0,false,"",""],["Bhooth Bangla","2026","movie","",0,false,"",""],["Bombay","1995","movie","",0,false,"",""],["Lanterns","","series","Season 1",0,false,"",""],["Dridam","2026","movie","",0,false,"",""],["Backrooms","2026","movie","",0,false,"",""],["Baby Do Die Do","2026","movie","",0,false,"",""],["Peddi","2026","movie","",0,false,"",""],["Irumudi","2026","movie","",0,false,"",""],["Awarapan 2","2026","movie","",0,false,"",""],["Reacher","","series","Season 4",0,false,"",""],["Vishwanath & Sons","2026","movie","",0,false,"",""],["Dhamaal-4","2026","movie","",0,false,"",""],["Alpha","2026","movie","",0,false,"",""],["DC","2026","movie","",0,false,"",""],["A Knight of the Seven Kingdoms","","movie","",0,false,"",""],["The Whisper Man","2026","movie","",0,false,"",""],["Evil Dead Burn","2026","movie","",0,false,"",""],["I, Nobody","2026","movie","",0,false,"",""],["Balan – The Boy","2026","movie","",0,false,"",""],["29","2026","movie","",0,false,"",""],["Uyir","2026","movie","",0,false,"",""],["Passenger","2026","movie","",0,false,"",""],["Chinna Chinna Aasai","2026","movie","",0,false,"",""],["Athiradi","2026","movie","",0,false,"",""],["Obsession","2026","movie","",0,false,"",""],["Blast","2026","movie","",0,false,"",""],["The Godfather","1972","movie","",0,false,"",""],["Mortal Kombat","1995","movie","",0,false,"",""],["Karuppu","2026","movie","",0,false,"",""],["Teach You A Lesson","","movie","",0,false,"",""],["Dacoit - A Love Story","2026","movie","",0,false,"",""],["Roja","1992","movie","",0,false,"",""],["Do Deewane Seher Mein","2026","movie","",0,false,"",""],["Bakaiti","2025","series","Season 1",0,false,"",""],["Tu Yaa Main","2026","movie","",0,false,"",""],["The Housemaid","2025","movie","",0,false,"",""],["Domm: Until the Last Breath","","movie","",0,false,"",""],["Kara","2026","movie","",0,false,"",""],["Berlin and the Jewels of Paris","","movie","",0,false,"",""],["Berlin and the Lady with an Ermine","","movie","",0,false,"",""],["The Boys","","series","Season 1 + 2 + 3 + 4 + 5",0,false,"",""],["Toaster","2026","movie","",0,false,"",""],["Wake Up Dead Man- A Knives Out Mystery","2025","movie","",0,false,"",""],["Project Hail Mary","2026","movie","",0,false,"",""],["Dhurandhar","2026","movie","",0,false,"",""],["Dhurandhar- The Revenge","2026","movie","",0,false,"",""],["Sapne Vs Everyone","","series","S1-S2",0,false,"",""],["Vaazhai","2024","movie","",0,false,"",""],["Vaazha II Biopic of a Billion Bros","2026","movie","",0,false,"",""],["No Other Choice","","movie","",0,false,"",""],["Prathichaya","2026","movie","",0,false,"",""],["Sambhavam Adhyayam Onnu","2026","movie","",0,false,"",""],["O' Romeo","2026","movie","",0,false,"",""],["Atonement","2008","movie","",0,false,"",""],["Jamnapaar","","series","Season 3",0,false,"",""],["Aspirants","","series","Season 3",0,false,"",""],["With Love","2026","movie","",0,false,"",""],["Sarvam Maya","2025","movie","",0,false,"",""],["Dhurandhar","2025","movie","",0,false,"",""],["Tere Ishk Mein","2025","movie","",0,false,"",""],["Lupin","","series","Season 1 + 2 + 3",0,false,"",""],["Haq","2025","movie","",0,false,"",""],["Mission Muh Dikhayi","","series","Season 1",0,false,"",""],["Eko","2025","movie","",0,false,"",""],["11:11 Gyaarah Gyaarah","","series","Season 1",0,false,"",""],["Kaantha","2025","movie","",0,false,"",""],["The Seduction","","series","Season 1",0,false,"",""],["PLURIBUS","","series","Season 1",0,false,"",""],["Sisu","2022","movie","",0,false,"",""],["Sisu 2 : Road to Revenge","2025","movie","",0,false,"",""],["Bāhubali The Epic","2025","movie","",0,false,"",""],["Karthik Calling Karthik","2010","movie","",0,false,"",""],["IT: Welcome to Derry","","movie","",0,false,"",""],["Dark Nuns","2025","movie","",0,false,"",""],["Manchester by the Sea","2016","movie","",0,false,"",""],["Maaman","2025","movie","",0,false,"",""],["La La Land","2016","movie","",0,false,"",""],["6 Underground","2019","movie","",0,false,"",""],["Dies Irae","2025","movie","",0,false,"",""],["When Life Gives You Tangerines","","movie","",0,false,"",""],["The Girlfriend","2025","movie","",0,false,"",""],["Thamma","2025","movie","",0,false,"",""],["Last Samurai Standing","","series","Season 1",0,false,"",""],["The Boss Baby","2017","movie","",0,false,"",""],["Queen of Tears","","series","Season 1",0,false,"",""],["Gladiator","2000","movie","",0,false,"",""],["Gladiator II","2024","movie","",0,false,"",""],["Delhi Crime Story","","series","Season 3",0,false,"",""],["Searching for Bobby Fischer","1993","movie","",0,false,"",""],["40 Acres","2025","movie","",0,false,"",""],["The Family Man","","series","Season 3",0,false,"",""],["Homebound","2025","movie","",0,false,"",""],["Kadha Innuvare","2024","movie","",0,false,"",""],["Tornado","2025","movie","",0,false,"",""],["One Battle After Another","2025","movie","",0,false,"",""],["Nishaanchi","2025","movie","",0,false,"",""],["Nishaanchi 2","2025","movie","",0,false,"",""],["Dude","2025","movie","",0,false,"",""],["Frankenstein","2025","movie","",0,false,"",""],["Avihitham","2025","movie","",0,false,"",""],["Jolly LLB 3","2025","movie","",0,false,"",""],["Dhadak 2","2025","movie","",0,false,"",""],["The Fantastic Four: First Steps","2025","movie","",0,false,"",""],["The Young and Prodigious T.S. Spivet","2013","movie","",0,false,"",""],["Sweet Home","","series","Season 1 + 2 + 3",0,false,"",""],["Paatal Lok","","series","Season 1",0,false,"",""],["The Rats: A Witcher Tale","2025","movie","",0,false,"",""],["The Witcher","","series","Season 1",0,false,"",""],["Lokah : Chapter 1 Chandra","2025","movie","",0,false,"",""],["Once Again","2018","movie","",0,false,"",""],["Idli Kadai","2025","movie","",0,false,"",""],["They Call Him OG","2025","movie","",0,false,"",""],["Vash : Level 2","2025","movie","",0,false,"",""],["The Deliverance","2024","movie","",0,false,"",""],["The Crucifixion","2017","movie","",0,false,"",""],["A Cure for Wellness","2017","movie","",0,false,"",""],["Ace","2025","movie","",0,false,"",""],["Mirage","2025","movie","",0,false,"",""],["Bhagwat – Chapter One- Raakshas","2025","movie","",0,false,"",""],["Baaghi 4","2025","movie","",0,false,"",""],["Tempest","","series","Season 1",0,false,"",""],["Trigger","","series","Season 1",0,false,"",""],["Don't F**k with Cats: Hunting an Internet Killer","2019","movie","",0,false,"",""],["NOPE","2022","movie","",0,false,"",""],["Us","2019","movie","",0,false,"",""],["War 2","2025","movie","",0,false,"",""],["Coolie","2026","movie","",0,false,"",""],["What You Wish For","2024","movie","",0,false,"",""],["Maalik","2025","movie","",0,false,"",""],["A Working Man","2025","movie","",0,false,"",""],["Requiem for a Dream","2000","movie","",0,false,"",""],["The Conjuring: Last Rites","2025","movie","",0,false,"",""],["Bedevilled","2010","movie","",10,false,"",""],["Chhorii 2","2025","movie","",0,false,"",""],["55","2025","movie","",0,false,"",""],["Madharaasi","2025","movie","",0,false,"",""],["A Bittersweet life","2015","movie","",0,false,"",""],["Odum Kuthira Chadum Kuthira","2025","movie","",0,false,"",""],["Hot Girls Wanted","2015","movie","",0,false,"",""],["Time Trap","2018","movie","",0,false,"",""],["Bon Appétit, Your Majesty","","series","Season 1",0,false,"",""],["Mantis","2025","movie","",0,false,"",""],["Aap Jaisa Koi","2025","movie","",0,false,"",""],["Hridayapoorvam","2025","movie","",0,false,"",""],["Alice in Borderland","","series","Season 3",0,false,"",""],["Bring Her Back","2025","movie","",0,false,"",""],["Padakkalam","2025","movie","",0,false,"",""],["Inspector Zende","2025","movie","",0,false,"",""],["Oppenheimer","2023","movie","",0,false,"",""],["Real Steel","2011","movie","",0,false,"",""],["The Ba***ds of Bollywood","","series","Season 1",0,false,"",""],["Companion","2025","movie","",0,false,"",""],["Saiyaara","2025","movie","",0,false,"",""],["Nobody 2","2025","movie","",0,false,"",""],["Tourist Family","2025","movie","",0,false,"",""],["Monster","2023","movie","",0,false,"",""],["Weapons","2025","movie","",0,false,"",""],["Oppam","2016","movie","",0,false,"",""],["F1- The Movie","2025","movie","",0,false,"",""],["The Ritual","2025","movie","",0,false,"",""],["Lost","","series","Season 1 + 2 + 3 + 4 + 5 + 6",0,false,"",""],["Wednesday","","series","Season 2",0,false,"",""],["M3GAN 2.0","2025","movie","",0,false,"",""],["Jurassic World Rebirth","2025","movie","",0,false,"",""],["Adolescence","","series","Season 1",0,false,"",""],["Bodyguard","","series","Season 1",0,false,"",""],["Mercy for None","","series","Season 1",0,false,"",""],["Jewel Thief: The Heist Begins","","movie","",0,false,"",""],["Vijay- Thalaivan Thalaivii","2025","movie","",0,false,"",""],["3BHK","2025","movie","",0,false,"",""],["Ne Zha","2019","movie","",0,false,"",""],["Ne Zha 2","2025","movie","",0,false,"",""],["Soothravakyam","2025","movie","",0,false,"",""],["Thunderbolts – The New Avengers","2025","movie","",0,false,"",""],["Kingdom – Saamraajya","2025","movie","",0,false,"",""],["Suzhal: The Vortex","","series","Season 1 + 2",0,false,"",""],["Dhumketu","2025","movie","",0,false,"",""],["Sinners","2025","movie","",0,false,"",""],["The Villainess","2017","movie","",0,false,"",""],["Thug Life","2025","movie","",0,false,"",""],["Annayum Rasoolum","2013","movie","",0,false,"",""],["OtherLife","2024","movie","",0,false,"",""],["Automate","2014","movie","",0,false,"",""],["Mission: Impossible – The Final Reckoning","2025","movie","",0,false,"",""],["Mr. Queen","","series","Season 1",0,false,"",""],["Superman","2025","movie","",0,false,"",""],["Final Destination Bloodlines","2025","movie","",0,false,"",""],["Bone Tomahawk","2016","movie","",0,false,"",""],["Housefull 5","2025","movie","",0,false,"",""],["The Vault","2021","movie","",0,false,"",""],["Ozark","","series","Season 1 + 2 + 3 + 4",0,false,"",""],["Narivetta","2025","movie","",0,false,"",""],["Karate Kid - Legends","2025","movie","",0,false,"",""],["Dasvi","2022","movie","",0,false,"",""],["Moana","","movie","",0,false,"",""],["Moana 2","2024","movie","",0,false,"",""],["Ballerina : From the World of John Wick","2025","movie","",0,false,"",""],["Sitaare Zameen Par","2025","movie","",0,false,"",""],["Kuberaa","2025","movie","",0,false,"",""],["The Sandman","","series","Season 2",0,false,"",""],["Good Boy","","series","Season 1",0,false,"",""],["Panchayat","","series","Season 1 + 2 + 3 + 4",0,false,"",""],["Squid Game","","series","Season 1 + 2 + 3",0,false,"",""],["Cobra Kai","","series","Season 1 + 2 + 3 + 4 + 5 + 6",0,false,"",""],["Good Will Hunting","1998","movie","",0,false,"",""],["The Hummingbird Project","2018","movie","",0,false,"",""],["Hacker","2016","movie","",0,false,"",""],["Retro","2025","movie","",0,false,"",""],["The Accountant","2016","movie","",0,false,"",""],["The Accountant 2","2025","movie","",0,false,"",""],["Presumed Innocent","","series","Season 1",0,false,"",""],["HIT-The Third Case","2025","movie","",0,false,"",""],["Thudarum","2025","movie","",0,false,"",""],["The Bourne Identity","2002","movie","",0,false,"",""],["The Bourne Supremacy","2004","movie","",0,false,"",""],["The Bourne Ultimatum","2007","movie","",0,false,"",""],["The Bourne Legacy","2012","movie","",0,false,"",""],["Jason Bourne","2016","movie","",0,false,"",""],["Weak Hero Class 1","","movie","",0,false,"",""],["Raid 2","2025","movie","",0,false,"",""],["Legend of the Seeker","","movie","",0,false,"",""],["Gram Chikitsalay","","movie","",0,false,"",""],["Dragon","2025","movie","",0,false,"",""],["Jaat","2025","movie","",0,false,"",""],["Havoc","2025","movie","",0,false,"",""],["From","","series","Season 1+2+3",0,false,"",""],["Death of a Unicorn","2025","movie","",0,false,"",""],["Kooman","2022","movie","",0,false,"",""],["Heretic","2024","movie","",0,false,"",""],["Superboys of Malegaon","2025","movie","",0,false,"",""],["Veera Dheera Sooran","2025","movie","",0,false,"",""],["Limitless","2011","movie","",0,false,"",""],["Sikandar","2025","movie","",0,false,"",""],["Return to Sender","2015","movie","",0,false,"",""],["Lucifer","2019","movie","",0,false,"",""],["L2: Empuraan","2025","movie","",0,false,"",""],["Crazxy – Crazy","2025","movie","",0,false,"",""],["Officer on Duty","2025","movie","",0,false,"",""],["Kathal: A Jackfruit Mystery","2023","movie","",0,false,"",""],["Prisoners","2013","movie","",0,false,"",""],["NO COUNTRY FOR OLD MAN","2007","movie","",0,false,"",""],["The Diplomat","2025","movie","",0,false,"",""],["Dispassionate Love","2018","movie","",0,false,"",""],["The Tourist","2010","movie","",0,false,"",""],["The Haunting of Bly Manor","2020","movie","",0,false,"",""],["The Haunting of Hill House","2018","series","",0,false,"",""],["Thandel","2025","movie","",0,false,"",""],["The Last Warrior","2017","movie","",0,false,"",""],["Demon City","2025","movie","",0,false,"",""],["The Menu","2022","movie","",0,false,"",""],["SEE","","series","Season 1+2+3",0,false,"",""],["Nobody","2021","movie","",0,false,"",""],["The Northman","2022","movie","",0,false,"",""],["Ponman","2025","movie","",0,false,"",""],["Alice in Borderland","","series","Season 1+2",0,false,"",""],["Viduthalai Part 1","2023","movie","",0,false,"",""],["Viduthalai Part 2","2024","movie","",0,false,"",""],["Deva","2025","movie","",0,false,"",""],["Rekhachithram","2025","movie","",0,false,"",""],["The Day of the Jackal","","series","Season 1",0,false,"",""],["The Night Agent","","series","Season 1+2",0,false,"",""],["The Martian","","movie","",0,false,"",""],["Yo Yo Honey Singh: Famous","","movie","",0,false,"",""],["Reacher","","series","Season 1+2+3",0,false,"",""],["No Reservations","2007","movie","",0,false,"",""],["The Fortress","2017","movie","",0,false,"",""],["Thangalaan","2024","movie","",0,false,"",""],["Paddington in Peru","2024","movie","",0,false,"",""],["Paddington 2","2017","movie","",0,false,"",""],["Paddington","2014","movie","",0,false,"",""],["Deliver Us","2023","movie","",0,false,"",""],["The Calendar Killer","2025","movie","",0,false,"",""],["Mufasa: The Lion King","2024","movie","",0,false,"",""],["Pedro Páramo","2024","movie","",0,false,"",""],["In the Land of Saints and Sinners","2023","movie","",0,false,"",""],["Coherence","2013","movie","",0,false,"",""],["The Gorge","2025","movie","",0,false,"",""],["The Count of Monte Cristo","2024","movie","",0,false,"",""],["Kanguva","2024","movie","",0,false,"",""],["Den of Thieves","2018","movie","",0,false,"",""],["Den of Thieves 2- Pantera","2025","movie","",0,false,"",""],["Nosferatu","2024","movie","",0,false,"",""],["Identity","2025","movie","",0,false,"",""],["Parking","2023","movie","",0,false,"",""],["The Mehta Boys","2024","movie","",0,false,"",""],["Bogotá- City of the Lost","2024","movie","",0,false,"",""],["The Storyteller","2022","movie","",0,false,"",""],["Fateh","2025","movie","",0,false,"",""],["Night Hunter","2018","movie","",0,false,"",""],["Pani","2024","movie","",0,false,"",""],["Kraven the Hunter","2024","movie","",0,false,"",""],["Game Changer","2025","movie","",0,false,"",""],["Baby John","2024","movie","",0,false,"",""],["Sookshmadarshini","2024","movie","",0,false,"",""],["Dark","2017","series","",0,false,"",""],["Marco","2024","movie","",0,false,"",""],["Jamtara Sabka Number Ayega","","series","Season 1+2",0,false,"",""],["The Platform 2","2024","movie","",0,false,"",""],["The Platform","2020","movie","",0,false,"",""],["Squid Game","","series","Season 2",0,false,"",""],["Visfot","2024","movie","",0,false,"",""],["The Roundup Punishment","2024","movie","",0,false,"",""],["Pushpa 2 – The Rule","2024","movie","",0,false,"",""],["Bougainvillea","2024","movie","",0,false,"",""],["Wonderland","2024","movie","",0,false,"",""],["Red One","2024","movie","",0,false,"",""],["Despatch","2024","movie","",0,false,"",""],["Mayhem – Farang","2023","movie","",0,false,"",""],["Singham Again","2024","movie","",0,false,"",""],["Amaran","2024","movie","",0,false,"",""],["The Wild Robot","2024","movie","",0,false,"",""],["Level Cross","2024","movie","",0,false,"",""],["Killers Of The Flower Moon","2023","movie","",0,false,"",""],["Jigra","2024","movie","",0,false,"",""],["Pannaiyarum Padminiyum","2014","movie","",0,false,"",""],["Lucky Baskhar","2024","movie","",0,false,"",""],["Devara - Part 1","2024","movie","",0,false,"",""],["The Signature","2024","movie","",0,false,"",""],["Kishkindha Kaandam","2024","movie","",0,false,"",""],["Kozhipannai Chelladurai","2024","movie","",0,false,"",""],["Deadpool & Wolverine","2024","movie","",0,false,"",""],["Vettaiyan: The Hunter","2024","movie","",0,false,"",""],["Yudhra","2024","movie","",0,false,"",""],["The Substance","2024","movie","",0,false,"",""],["Joker: Folie à Deux","2024","movie","",0,false,"",""],["Meiyazhagan","2024","movie","",0,false,"",""],["Vedaa","2024","movie","",0,false,"",""],["Vaazha - Biopic of a billion boys","2024","movie","",0,false,"",""],["Surya’s Saturday – Saripodhaa Sanivaaram","2024","movie","",0,false,"",""],["Stree 2: Sarkate Ka Aatank","2024","movie","",0,false,"",""],["Auron Mein Kahan Dum Tha","2024","movie","",0,false,"",""],["Passengers","2016","movie","",0,false,"",""],["Old Boy","2003","movie","",0,false,"",""],["Incendies","2010","movie","",0,false,"Korean",""],["Girl in the Basement","2021","movie","",0,false,"",""],["Hey Ram","2000","movie","",0,false,"",""],["Thalavan","2024","movie","",0,false,"",""],["Colors of Evil: Red","2024","movie","",0,false,"",""],["Speak No Evil","2022","movie","",0,false,"",""],["Raayan","2024","movie","",0,false,"",""],["Agra","2023","movie","",0,false,"",""],["Tokyo Swindlers","","series","Season 1",0,false,"",""],["Big Mouth","","series","Season 1",0,false,"",""],["Rebel Moon – Chapter One: Chalice of Blood","2023","movie","",0,false,"",""],["Rebel Moon – Chapter Two: Curse of Forgiveness","2024","movie","",0,false,"",""],["Kingdom of the Planet of the Apes","2024","movie","",0,false,"",""],["Mangalavaaram","2023","movie","",0,false,"",""],["Haseen Dillruba","2021","movie","",0,false,"",""],["Phir Aayi Hasseen Dillruba","2024","movie","",0,false,"",""],["Kalki 2898 – AD","2024","movie","",0,false,"",""],["Aadujeevitham – The Goat Life","2024","movie","",0,false,"",""],["Kill","2024","movie","",0,false,"",""],["Bhaiyya Ji","2024","movie","",0,false,"",""],["All India Rank","2023","movie","",0,false,"",""],["The Idea Of You","2024","movie","",0,false,"",""],["Love Lies Bleeding","2024","movie","",0,false,"",""],["Tribhuvan Mishra CA Topper","2024","series","Season 1",0,false,"",""],["Murder In Mahim","2024","series","S01",0,false,"",""],["Desierto","2015","movie","",0,false,"",""],["Salò, Or The 120 Days Of Sodom","1975","movie","",0,false,"",""],["L'ACCORDEUR - The Piano Tuner","2010","movie","",0,false,"",""],["Andhadhun","2018","movie","",0,false,"",""],["Maestro","2021","movie","",0,false,"",""],["Bhramam","2021","movie","",0,false,"",""],["Andhagan","2024","movie","",0,false,"",""],["Swades","2004","movie","",0,false,"",""],["Rang De Basanti","2006","movie","",0,false,"",""],["3 iditos (G.O.A.T)","2009","movie","",0,false,"",""],["🎬 Vivah","2006","movie","",0,false,"",""],["Hungama","2003","movie","",0,false,"",""],["Hungama","2021","movie","",0,false,"",""],["Hulchul","2004","movie","",0,false,"",""],["Bhagam Bhag","2006","movie","",0,false,"",""],["Chup Chup Ke","2006","movie","",0,false,"",""],["MALAMAAL WEEKLY","2006","movie","",0,false,"",""],["De Dana Dan","2009","movie","",0,false,"",""],["Khatta Meetha","2010","movie","",0,false,"",""],["Mere Baap Pehle Aap","2008","movie","",0,false,"",""],["One Two Three","2008","movie","",0,false,"",""],["Kis Kisko Pyaar Karoon","2015","movie","",0,false,"",""],["Taxi No. 9 2 11","2006","movie","",0,false,"",""],["HERA PHERI","2000","movie","",0,false,"",""],["PHIR HERA PHERI","2006","movie","",0,false,"",""],["ANIMAL","2023","movie","",0,false,"",""],["KGF KGF 2 (2022)","2018","movie","",0,false,"",""],["SALAAR","2023","movie","",0,false,"",""],["12th Fail","2023","movie","",0,false,"",""],["Runway 24","2022","movie","",0,false,"",""],["Heropanti Heropanti (2022)","2014","movie","",0,false,"",""],["Maidan","2024","movie","",0,false,"",""],["BMCM","2024","movie","",0,false,"",""],["Fighter","2024","movie","",0,false,"",""],["Stree","2018","movie","",0,false,"",""],["Bhediya","2022","movie","",0,false,"",""],["Stree 2","2024","movie","",0,false,"",""],["Salaam Namaste","2005","movie","",0,false,"",""],["Dybbuk","2021","movie","",0,false,"",""],["Chhorii","2021","movie","",0,false,"",""],["Ragini MMS","2011","movie","",0,false,"",""],["Ragini MMS 2","2014","movie","",0,false,"",""],["Trishna","2011","movie","",0,false,"",""],["Jai Bhim","2021","movie","",0,false,"",""],["Blue Jay + 96 (2018)","2016","movie","",0,false,"",""],["18 Pages","2022","movie","",0,false,"",""],["SITA RAMAM","2022","movie","",0,false,"",""],["Hi Nanna","2023","movie","",0,false,"",""],["Do Lafzon Ki Kahani","2016","movie","",0,false,"",""],["Dia","2020","movie","",0,false,"",""],["PREMAM","2015","movie","",0,false,"",""],["Premalu","2024","movie","",0,false,"Malayalam",""],["RX 100","2018","movie","",0,false,"",""],["Baby","2023","movie","",0,false,"",""],["Ishq","2019","movie","",0,false,"Malayalam",""],["Dada","2023","movie","",0,false,"",""],["Raanjhanaa","2013","movie","",0,false,"",""],["JAB WE MET","2007","movie","",0,false,"",""],["Sanam Teri Kasam","2016","movie","",0,false,"",""],["Black","2005","movie","",0,false,"",""],["PIKU","2015","movie","",0,false,"",""],["MASAAN","2015","movie","",0,false,"",""],["LOOTERA","2013","movie","",0,false,"",""],["OCTOBER","2018","movie","",0,false,"",""],["UDAAN","2010","movie","",0,false,"",""],["TAMASHA","2015","movie","",0,false,"",""],["ROCKSTAR","2011","movie","",0,false,"",""],["TUMBBAD","2018","movie","",0,false,"",""],["Mirzya","2016","movie","",0,false,"",""],["BHAVESH JOSHI","2018","movie","",0,false,"",""],["Thar","2022","movie","",0,false,"",""],["Ray","2021","movie","",0,false,"",""],["Dil Se..","1998","movie","",0,false,"",""],["Devdas","2002","movie","",0,false,"",""],["Tere Naam","2003","movie","",0,false,"",""],["Veer-Zaara","2004","movie","",0,false,"",""],["Kyon Ki...","2005","movie","",0,false,"",""],["Ghajini","2008","movie","",0,false,"",""],["Antony","2023","movie","",0,false,"Malayalam",""],["Laapataa Ladies","2023","movie","",0,false,"",""],["8 A.M. Metro","2023","movie","",0,false,"",""],["Sapta Sagaradaache Ello – Side A","2023","movie","",0,false,"",""],["Sapta Sagaradaache Ello - Side B","2023","movie","",0,false,"",""],["The Family Star","2024","movie","",0,false,"",""],["Miss. Shetty Mr. Polishetty","2023","movie","",0,false,"",""],["Kahaani","2012","movie","",0,false,"",""],["Bob Biswas","2021","movie","",0,false,"",""],["3G","2013","movie","",0,false,"",""],["Raaz: The Mystery Continues…","2009","movie","",0,false,"",""],["Raaz Reboot","2016","movie","",0,false,"",""],["1920","2008","movie","",0,false,"",""],["1920 London","2016","movie","",0,false,"",""],["Pari","2018","movie","",0,false,"",""],["Bhaagamathie","2018","movie","",0,false,"",""],["Gunehgaar","2022","movie","",0,false,"",""],["Shaitaan","2024","movie","",0,false,"",""],["Madgaon Express","2024","movie","",0,false,"",""],["Wazir","2016","movie","",0,false,"",""],["Kho Gaye Hum Kahan","2023","movie","",0,false,"",""],["Bhool Bhulaiyaa","2007","movie","",0,false,"",""],["Teen Patti","2010","movie","",0,false,"",""],["Chandigarh Kare Aashiqui","2021","movie","",0,false,"",""],["Sergeant","2023","movie","",0,false,"",""],["Lust Stories 2","2023","movie","",0,false,"",""],["King of Kotha","2023","movie","",0,false,"Malayalam",""],["Jailer","2023","movie","",0,false,"",""],["Sooryavansham","1999","movie","",0,false,"",""],["Cheeni Kum","2007","movie","",0,false,"",""],["Nishabd","2007","movie","",0,false,"",""],["Dhobi Ghat","2010","movie","",0,false,"",""],["Welcome","2007","movie","",0,false,"",""],["Welcome 2 Karachi","2015","movie","",0,false,"",""],["Housefull","2010","movie","",0,false,"",""],["Golmaal Again","2017","movie","",0,false,"",""],["Titanic","1997","movie","",0,false,"English (Hollywood)",""],["The Notebook","2004","movie","",0,false,"English (Hollywood)",""],["The Pursuit of Happyness","2006","movie","",10,false,"English (Hollywood)",""],["Seven Pounds","2008","movie","",10,false,"English (Hollywood)",""],["I Am Legend","2007","movie","",0,false,"English (Hollywood)",""],["I, Robot","2004","movie","",0,false,"English (Hollywood)",""],["After Earth","2013","movie","",0,false,"English (Hollywood)",""],["Hancock","2008","movie","",0,false,"English (Hollywood)",""],["Emancipation","2022","movie","",0,false,"English (Hollywood)",""],["King Richard","2021","movie","",0,false,"English (Hollywood)",""],["Aladdin","2019","movie","",0,false,"English (Hollywood)",""],["Hitch","2005","movie","",0,false,"English (Hollywood)",""],["Bad Boys","1995","movie","",0,false,"English (Hollywood)",""],["Bad Boys","2003","movie","",0,false,"English (Hollywood)",""],["Bad Boys","2020","movie","",0,false,"English (Hollywood)",""],["Bad Boys","2024","movie","",0,false,"English (Hollywood)",""],["Men in Black I","1997","movie","",0,false,"English (Hollywood)",""],["Men in Black II","2002","movie","",0,false,"English (Hollywood)",""],["Men in Black III","2012","movie","",0,false,"English (Hollywood)",""],["The Fall Guy","2024","movie","",0,false,"English (Hollywood)",""],["Abigail","2024","movie","",0,false,"English (Hollywood)",""],["Deadpool 2","2018","movie","",0,false,"English (Hollywood)",""],["Orphan","2009","movie","",0,false,"English (Hollywood)",""],["The Killer","2023","movie","",0,false,"English (Hollywood)",""],["Bullet Train","2022","movie","",0,false,"English (Hollywood)",""],["Burning Betrayal","2023","movie","",0,false,"English (Hollywood)",""],["Barbarian","2022","movie","",0,false,"English (Hollywood)",""],["Beautiful Disaster","2023","movie","",0,false,"English (Hollywood)",""],["The Ministry of Ungentlemanly Warfare","2024","movie","",0,false,"English (Hollywood)",""],["Salt","2010","movie","",0,false,"English (Hollywood)",""],["Anna","2019","movie","",0,false,"English (Hollywood)",""],["Basic Instinct","1992","movie","",0,false,"English (Hollywood)",""],["Basic Instinct 2","2006","movie","",0,false,"English (Hollywood)",""],["Jackpot!","2024","movie","",0,false,"English (Hollywood)",""],["Millers Girl","2024","movie","",0,false,"English (Hollywood)",""],["A Monster Calls","2016","movie","",0,false,"English (Hollywood)",""],["Naughty Girl aka Neposlushnaya","2024","movie","",0,false,"English (Hollywood)",""],["What Will People Say","2017","movie","",6,false,"English (Hollywood)",""],["300","2006","movie","",0,false,"English (Hollywood)",""],["300: Rise of an Empire","2014","movie","",0,false,"English (Hollywood)",""],["The Mummy","2009","movie","",0,false,"English (Hollywood)",""],["The Mummy Returns","2001","movie","",0,false,"English (Hollywood)",""],["The Mummy: Tomb of the Dragon Emperor","2008","movie","",0,false,"English (Hollywood)",""],["The Mummy","2017","movie","",0,false,"English (Hollywood)",""],["JoHn Carter","2012","movie","",0,false,"English (Hollywood)",""],["Gods of Egypt","2016","movie","",0,false,"English (Hollywood)",""],["Prince of Persia: The Sands of Time","2010","movie","",0,false,"English (Hollywood)",""],["Dracula Untold","2014","movie","",0,false,"English (Hollywood)",""],["Jack the Giant Slayer","2013","movie","",0,false,"English (Hollywood)",""],["Hercules","2014","movie","",0,false,"English (Hollywood)",""],["I Am Number Four","2011","movie","",0,false,"English (Hollywood)",""],["The Sorcerer's Apprentice","","movie","",0,false,"English (Hollywood)",""],["Snow White and the Huntsman","2012","movie","",0,false,"English (Hollywood)",""],["The Huntsman: Winter's War","2016","movie","",0,false,"English (Hollywood)",""],["Fifty Shades of Grey","2015","movie","",0,false,"English (Hollywood)",""],["Fifty Shades Darker","2017","movie","",0,false,"English (Hollywood)",""],["Fifty Shades Freed","2018","movie","",0,false,"English (Hollywood)",""],["Nymphomaniac: Vol. I","2013","movie","",0,false,"English (Hollywood)",""],["Nymphomaniac: Vol. II","2013","movie","",0,false,"English (Hollywood)",""],["The Lord of the Rings: The Fellowship of the Ring","2001","movie","",0,false,"English (Hollywood)",""],["The Lord of the Rings: The Return of the King","2003","movie","",0,false,"English (Hollywood)",""],["The Lord of the Rings: The Two Towers","2002","movie","",0,false,"English (Hollywood)",""],["The Hobbit: An Unexpected Journey","2012","movie","",0,false,"English (Hollywood)",""],["The Hobbit: The Desolation of Smaug","2013","movie","",0,false,"English (Hollywood)",""],["The Hobbit: The Battle of the Five Armies","2014","movie","",0,false,"English (Hollywood)",""],["Pirates of the Caribbean: The Curse of the Black Pearl","2003","movie","",0,false,"English (Hollywood)",""],["Pirates of the Caribbean: Dead Man's Chest","2006","movie","",0,false,"English (Hollywood)",""],["Pirates of the Caribbean: At World's End","2007","movie","",0,false,"English (Hollywood)",""],["Pirates of the Caribbean: On Stranger Tides","2011","movie","",0,false,"English (Hollywood)",""],["Pirates of the Caribbean: Dead Men Tell No Tales","2017","movie","",0,false,"English (Hollywood)",""],["Blooper Reel","2003","movie","",0,false,"English (Hollywood)",""],["Bloopers of the Caribbean","2006","movie","",0,false,"English (Hollywood)",""],["Bloopers of the Caribbean","2007","movie","",0,false,"English (Hollywood)",""],["A Journey Behind the Scenes of 'Pirates of the Caribbean: At World's End'","2007","movie","",0,false,"English (Hollywood)",""],["Pirates of the Caribbean: The Legend of Jack Sparrow","2006","movie","",0,false,"English (Hollywood)",""],["Final Destination","2000","movie","",0,false,"English (Hollywood)",""],["Final Destination 2","2003","movie","",0,false,"English (Hollywood)",""],["Final Destination 3","2006","movie","",0,false,"English (Hollywood)",""],["The Final Destination","2009","movie","",0,false,"English (Hollywood)",""],["Final Destination 5","2011","movie","",0,false,"English (Hollywood)",""],["Resident Evil","2002","movie","",0,false,"English (Hollywood)",""],["Resident Evil: Apocalypse","2004","movie","",0,false,"English (Hollywood)",""],["Resident Evil: Extinction","2007","movie","",0,false,"English (Hollywood)",""],["Resident Evil: Afterlife","2010","movie","",0,false,"English (Hollywood)",""],["Resident Evil: Retribution","2012","movie","",0,false,"English (Hollywood)",""],["Resident Evil: The Final Chapter","2016","movie","",0,false,"English (Hollywood)",""],["Twilight","2008","movie","",0,false,"English (Hollywood)",""],["The Twilight Saga: New Moon","2009","movie","",0,false,"English (Hollywood)",""],["The Twilight Saga: Eclipse","2010","movie","",0,false,"English (Hollywood)",""],["The Twilight Saga: Breaking Dawn - Part 1","2011","movie","",0,false,"English (Hollywood)",""],["The Twilight Saga: Breaking Dawn - Part 2","2012","movie","",0,false,"English (Hollywood)",""],["Wrong Turn","2003","movie","",0,false,"English (Hollywood)",""],["Wrong Turn 2: Dead End","2007","movie","",0,false,"English (Hollywood)",""],["Wrong Turn 3: Left for Dead","2009","movie","",0,false,"English (Hollywood)",""],["Wrong Turn 4: Bloody Beginnings","2011","movie","",0,false,"English (Hollywood)",""],["Wrong Turn 5: Bloodlines","2012","movie","",0,false,"English (Hollywood)",""],["Wrong Turn 6: Last Resort","2014","movie","",0,false,"English (Hollywood)",""],["Wrong Turn","2021","movie","",0,false,"English (Hollywood)",""],["Rambo: First Blood","1982","movie","",0,false,"English (Hollywood)",""],["Rambo: First Blood Part II","1985","movie","",0,false,"English (Hollywood)",""],["Rambo: III","1988","movie","",0,false,"English (Hollywood)",""],["Rambo","2008","movie","",0,false,"English (Hollywood)",""],["Rambo: Last Blood","2019","movie","",0,false,"English (Hollywood)",""],["The Matrix","1999","movie","",0,false,"English (Hollywood)",""],["The Matrix Reloaded","2003","movie","",0,false,"English (Hollywood)",""],["The Animatrix","2003","movie","",0,false,"English (Hollywood)",""],["The Matrix Revolutions","2003","movie","",0,false,"English (Hollywood)",""],["The Matrix Resurrections","2021","movie","",0,false,"English (Hollywood)",""],["Jumanji","1995","movie","",0,false,"English (Hollywood)",""],["Jumanji: Welcome to the Jungle","2017","movie","",0,false,"English (Hollywood)",""],["Jumanji: The Next Level","2019","movie","",0,false,"English (Hollywood)",""],["Men","2022","movie","",0,false,"English (Hollywood)",""],["Lamb","2021","movie","",0,false,"English (Hollywood)",""],["Splice","2009","movie","",0,false,"English (Hollywood)",""],["Get Out","2017","movie","",0,false,"English (Hollywood)",""],["Orphan: First Kill","2022","movie","",0,false,"English (Hollywood)",""],["Don't Breathe","2016","movie","",0,false,"English (Hollywood)",""],["Don’t Breathe 2","2021","movie","",0,false,"English (Hollywood)",""],["Texas Chainsaw Massacre","2022","movie","",0,false,"English (Hollywood)",""],["A Quiet Place","2018","movie","",0,false,"English (Hollywood)",""],["A Quiet Place Part II","2020","movie","",0,false,"English (Hollywood)",""],["The Escort","2015","movie","",0,false,"English (Hollywood)",""],["M3GAN","2022","movie","",0,false,"English (Hollywood)",""],["Cult of Chucky","2017","movie","",0,false,"English (Hollywood)",""],["Alpha","2018","movie","",0,false,"English (Hollywood)",""],["Cocaine Bear","2023","movie","",0,false,"English (Hollywood)",""],["Valerian and the City of a Thousand Planets","2017","movie","",0,false,"English (Hollywood)",""],["The Conjuring","2013","movie","",0,false,"","Horror"],["Annabelle","2014","movie","",0,false,"","Horror"],["The Conjuring 2","2016","movie","",0,false,"","Horror"],["Annabelle: Creation","2017","movie","",0,false,"","Horror"],["The Nun","2018","movie","",0,false,"","Horror"],["Annabelle Comes Home","2019","movie","",0,false,"","Horror"],["The Conjuring: The Devil Made Me Do It","2021","movie","",0,false,"","Horror"],["The Nun ll","2023","movie","",4,false,"","Horror"],["Insidious: Film Franchise","2010","movie","",0,false,"","Horror"],["Insidious: Chapter 2","2013","movie","",0,false,"","Horror"],["Insidious: Chapter 3","2015","movie","",0,false,"","Horror"],["Insidious: The Last Key","2018","movie","",0,false,"","Horror"],["Insidious: The Red Door","2023","movie","",0,false,"","Horror"],["The Exorcism","2024","movie","",2,false,"","Horror"],["The Pope’s Exorcist","2023","movie","",0,false,"","Horror"],["The Exorcist: Believer","2023","movie","",0,false,"","Horror"],["The Ring","2002","movie","",0,false,"","Horror"],["The Ring Two","2005","movie","",0,false,"","Horror"],["Rings","2017","movie","",0,false,"","Horror"],["Hidayah","2023","movie","",0,false,"","Horror"],["Khanzab","2023","movie","",0,false,"","Horror"],["Waktu Maghrib","2023","movie","",0,false,"","Horror"],["The Medium","2021","movie","",0,false,"","Horror"],["Cobweb","2023","movie","",2,false,"","Horror"],["Playhouse","2020","movie","",2,false,"","Horror"],["Don’t Kill Me","2021","movie","",0,false,"","Horror"],["The Invitation","2022","movie","",2,false,"","Horror"],["Knock at the Cabin","2023","movie","",0,false,"","Horror"],["Where The Scary Things Are","2022","movie","",0,false,"","Horror"],["Motel Melati – Losmen Melati","2023","movie","",0,false,"","Horror"],["Sinister","2012","movie","",0,true,"",""],["Sinister 2","2015","movie","",0,true,"",""],["Our House","2018","movie","",0,true,"",""],["Lights Out","2016","movie","",0,true,"",""],["The Curse of La Llorona","2019","movie","",0,true,"",""],["The Others","2001","movie","",0,true,"",""],["The Caller","2011","movie","",0,true,"",""],["Talk to Me","2022","movie","",0,true,"",""],["Veronica","2017","movie","",0,true,"",""],["Sister Death","2023","movie","",0,true,"",""],["The Power","2021","movie","",0,true,"",""],["Immaculate","2024","movie","",0,true,"",""],["Consecration","2023","movie","",0,true,"",""],["The Exorcism of God","2022","movie","",6,true,"",""],["Things Heard & Seen","2021","movie","",6,true,"",""],["The Possession of Hannah Grace","2018","movie","",6,true,"",""],["The Autopsy of Jane Doe","2016","movie","",6,true,"",""],["Prey for the Devil","2022","movie","",4,true,"",""],["Malignant","2021","movie","",0,true,"",""],["Evil Dead Rise","2023","movie","",6,true,"",""],["It","2017","movie","",0,true,"",""],["It Chapter Two","2019","movie","",0,true,"",""],["Up","2009","movie","",0,false,"","Animation & Cartoon"],["WALL·E","2008","movie","",0,false,"","Animation & Cartoon"],["Ratatouille","2007","movie","",0,false,"","Animation & Cartoon"],["Inside Out","2015","movie","",0,false,"","Animation & Cartoon"],["Inside Out 2","2024","movie","",0,false,"","Animation & Cartoon"],["Zootopia","2016","movie","",0,false,"","Animation & Cartoon"],["Alita: Battle Angel","2019","movie","",0,false,"","Animation & Cartoon"],["Pete’s Dragon","2016","movie","",0,false,"","Animation & Cartoon"],["Bridge to Terabithia","2007","movie","",0,false,"","Animation & Cartoon"],["How to Train Your Dragon","2010","movie","",0,false,"","Animation & Cartoon"],["Legend of the Boneknapper Dragon","2010","movie","",0,false,"","Animation & Cartoon"],["Book of Dragons","2011","movie","",0,false,"","Animation & Cartoon"],["Dragons: Gift of the Night Fury","2011","movie","",0,false,"","Animation & Cartoon"],["DreamWorks Dragons","2012","movie","",0,false,"","Animation & Cartoon"],["How to Train Your Dragon 1","2010","movie","",0,false,"","Animation & Cartoon"],["How to Train Your Dragon 2","2014","movie","",0,false,"","Animation & Cartoon"],["How to Train Your Dragon 3 : Homecoming","2019","movie","",0,false,"","Animation & Cartoon"],["How to Train Your Dragon 4 : The Hidden World","2019","movie","",0,false,"","Animation & Cartoon"],["Shrek","","movie","",0,false,"","Animation & Cartoon"],["Shrek 2","","movie","",0,false,"","Animation & Cartoon"],["Shrek the Third","","movie","",0,false,"","Animation & Cartoon"],["Shrek Forever After","","movie","",0,false,"","Animation & Cartoon"],["Puss in Boots","","movie","",0,false,"","Animation & Cartoon"],["Shrek 5","","movie","",0,false,"","Animation & Cartoon"],["Puss in Boots: The Last Wish","","movie","",0,false,"","Animation & Cartoon"],["Despicable Me","2010","movie","",0,false,"","Animation & Cartoon"],["Despicable Me 2","2013","movie","",0,false,"","Animation & Cartoon"],["Minions","","movie","",0,false,"","Animation & Cartoon"],["Despicable Me 3","2017","movie","",0,false,"","Animation & Cartoon"],["Minions: The Rise of Gru","2022","movie","",0,false,"","Animation & Cartoon"],["Despicable Me 4","2024","movie","",0,false,"","Animation & Cartoon"],["The Incredibles","2004","movie","",0,false,"","Animation & Cartoon"],["The Incredibles","2018","movie","",0,false,"","Animation & Cartoon"],["Toy Story","","movie","",0,false,"","Animation & Cartoon"],["Toy Story Treats","","movie","",0,false,"","Animation & Cartoon"],["Toy Story 2","","movie","",0,false,"","Animation & Cartoon"],["Buzz Lightyear of Star Command: The Adventure Begins","","movie","",0,false,"","Animation & Cartoon"],["Toy Story 3","","movie","",0,false,"","Animation & Cartoon"],["Toy Story Toons: Hawaiian Vacation","","movie","",0,false,"","Animation & Cartoon"],["Toy Story Toons: Small Fry","","movie","",0,false,"","Animation & Cartoon"],["Toy Story Toons: Partysaurus Rex","","movie","",0,false,"","Animation & Cartoon"],["Toy Story of Terror","","movie","",0,false,"","Animation & Cartoon"],["Toy Story That Time Forgot","","movie","",0,false,"","Animation & Cartoon"],["Toy Story 4","","movie","",0,false,"","Animation & Cartoon"],["Oldboy","2003","movie","",0,false,"Korean",""],["Maharaja","2024","movie","",0,false,"Korean",""],["Iratta","2023","movie","",0,false,"Korean",""],["Train to Busan","2016","movie","",0,false,"Korean",""],["Parasite","2019","movie","",0,false,"Korean",""],["Ballerina","2023","movie","",0,false,"Korean",""],["The Outlaws","2017","movie","",0,false,"Korean",""],["I Saw the Devil","2010","movie","",0,false,"Korean",""],["Hard Hit","2021","movie","",0,false,"Korean",""],["Believer 2","2023","movie","",0,false,"Korean",""],["Brave Citizen","2023","movie","",0,false,"Korean",""],["The Classified File","2015","movie","",0,false,"Korean",""],["Confession of Murder","2012","movie","",0,false,"Korean",""],["Confidential Assignment","2017","movie","",0,false,"Korean",""],["Memories of Murder","2003","movie","",0,false,"Korean",""],["A Hard Day","2014","movie","",0,false,"Korean",""],["Master","2016","movie","",0,false,"Korean",""],["A Company Man","2012","movie","",0,false,"Korean",""],["The Gangster, The Cop, The Devil","2019","movie","",0,false,"Korean",""],["The Roundup","2022","movie","",0,false,"Korean",""],["The Roundup: No Way Out","2023","movie","",0,false,"Korean",""],["The Roundup: Punishment","2024","movie","",0,false,"Korean",""],["Escape from Mogadishu","2021","movie","",0,false,"Korean",""],["The Killer: A Girl Who Deserves to Die","2022","movie","",0,false,"Korean",""],["Confidential Assignment 2: International","2022","movie","",0,false,"Korean",""],["Okja","2017","movie","",0,false,"Korean",""],["Aavesham","2024","movie","",0,false,"Malayalam",""],["Driving Licence","2019","movie","",0,false,"Malayalam",""],["Kumbalangi Nights","","movie","",0,false,"Malayalam",""],["Gold","2022","movie","",0,false,"Malayalam",""],["Guruvayoor Ambalanadayil","2024","movie","",0,false,"Malayalam",""],["Janaki Jaane","2023","movie","",0,false,"Malayalam",""],["Purusha Pretham","2023","movie","",0,false,"Malayalam",""],["Madhura Manohara Moham","2023","movie","",0,false,"Malayalam",""],["Anweshippin Kandethum","2024","movie","",0,false,"Malayalam",""],["Bramayugam","2024","movie","",0,false,"Malayalam",""],["Varshangalkku Shesham","2024","movie","",0,false,"Malayalam",""],["Manjummel Boys","2024","movie","",0,false,"Malayalam",""],["Romancham","2023","movie","",0,false,"Malayalam",""],["Churuli","2021","movie","",0,false,"Malayalam",""],["Neru","2023","movie","",0,false,"Malayalam",""],["Kannur Squad","2023","movie","",0,false,"Malayalam",""],["Christopher","2023","movie","",0,false,"Malayalam",""],["Kaathal – The Core","2023","movie","",0,false,"Malayalam",""],["RDX: Robert Dony Xavier","2023","movie","",0,false,"Malayalam",""],["Christy","2023","movie","",0,false,"Malayalam",""],["Oru Yamandan Premakadha","2019","movie","",0,false,"Malayalam",""],["CIA: Comrade In America","2017","movie","",0,false,"Malayalam",""],["Kaapa","2022","movie","",0,false,"Malayalam",""],["Drishyam","","movie","",0,false,"Malayalam",""],["Drishyam 2","","movie","",0,false,"Malayalam",""],["Ela Veezha Poonchira","2022","movie","",0,false,"Malayalam",""],["Cold Case – Police Story 2","2021","movie","",0,false,"Malayalam",""],["Muddy","2021","movie","",0,false,"Malayalam",""],["Mukundan Unni Associates","2022","movie","",0,false,"Malayalam",""],["Charlie","2015","movie","",0,false,"Malayalam",""],["Curry & Cyanide: The Jolly Joseph Case","2023","movie","",0,false,"Malayalam",""],["Gullak","","series","",0,false,"TV & Web Series",""],["Panchayat","","series","",0,false,"TV & Web Series",""],["Kota Factory","","series","",0,false,"TV & Web Series",""],["Kaala Paani","","series","",0,false,"TV & Web Series",""],["Kumari Srimathi","","series","",0,false,"TV & Web Series",""],["Guns & Gulaabs","","series","",0,false,"TV & Web Series",""],["The Trial","","series","",0,false,"TV & Web Series",""],["Citadel","","series","",0,false,"TV & Web Series",""],["Maamla Legal Hai","","series","",0,false,"TV & Web Series",""],["Criminal Justice","","series","Season 1",0,false,"TV & Web Series",""],["Criminal Justice: Behind Closed Doors","","series","Season 1",0,false,"TV & Web Series",""],["Criminal Justice: Adhura Sach","","series","Season 1",0,false,"TV & Web Series",""],["The Railway Men: The Untold Story of Bhopal","1984","series","",0,false,"TV & Web Series",""],["Jubilee","","series","",0,false,"TV & Web Series",""],["Heeramandi","","series","",0,false,"TV & Web Series",""],["Sultan of Delhi","","series","",0,false,"TV & Web Series",""],["City of Dreams","","series","",0,false,"TV & Web Series",""],["Showtime","","series","",0,false,"TV & Web Series",""],["Killer Soup","","series","",0,false,"TV & Web Series",""],["SunFlower","","series","",0,false,"TV & Web Series",""],["Chacha Vidhayak Hain Humare","","series","",0,false,"TV & Web Series",""],["Undekhi","","series","",0,false,"TV & Web Series",""],["Mirzapur","","series","",0,false,"TV & Web Series",""],["Kaala","","series","",0,false,"TV & Web Series",""],["Khakee: The Bihar Chapter","","series","",0,false,"TV & Web Series",""],["Bambai Meri Jaan","","series","",0,false,"TV & Web Series",""],["Dahaad","","series","",0,false,"TV & Web Series",""],["Kaalkoot","","series","",0,false,"TV & Web Series",""],["Delhi Crime","","series","",0,false,"TV & Web Series",""],["Kohrra","","series","",0,false,"TV & Web Series",""],["CAT","","series","",0,false,"TV & Web Series",""],["Class of ’83","","series","",0,false,"TV & Web Series",""],["Aashram","","series","",0,false,"TV & Web Series",""],["Raktanchal","","series","",0,false,"TV & Web Series",""],["Apharan","","series","",0,false,"TV & Web Series",""],["Gaanth Chapter 1 Jamnaa Paar","","series","",0,false,"TV & Web Series",""],["The Great Indian Murder","","series","",0,false,"TV & Web Series",""],["Garmi","","series","",0,false,"TV & Web Series",""],["Trial by Fire","","series","",0,false,"TV & Web Series",""],["Kerala Crime Files","","series","",0,false,"TV & Web Series",""],["Aranyak","","series","",0,false,"TV & Web Series",""],["Jaanbaaz Hindustan Ke","","series","",0,false,"TV & Web Series",""],["SHE","","series","",0,false,"TV & Web Series",""],["Rana Naidu","","series","",0,false,"TV & Web Series",""],["Farzi","","series","",0,false,"TV & Web Series",""],["Shaitan","","series","",0,false,"TV & Web Series",""],["Decoupled","","series","",0,false,"TV & Web Series",""],["Bad Cop","","series","Season 1",0,false,"TV & Web Series",""],["Asur","","series","",0,false,"TV & Web Series",""],["Breathe: Into the Shadows","","series","",0,false,"TV & Web Series",""],["Rocket Boys","","series","",0,false,"TV & Web Series",""],["Pop Kaun","","series","",0,false,"TV & Web Series",""],["House of Secrets: The Burari Deaths","","series","",0,false,"TV & Web Series",""],["Dahmer – Monster: The Jeffrey Dahmer Story","","series","",0,false,"TV & Web Series",""],["Yeh Kaali Kaali Ankhein","","series","",0,false,"TV & Web Series",""],["Taaza Khabar 1 + 2","","series","",0,false,"TV & Web Series",""],["The Night Manager","","series","",0,false,"TV & Web Series",""],["Badtameez Dil","","series","",0,false,"TV & Web Series",""],["Tulsa King","","series","",0,false,"TV & Web Series",""],["Breaking Bad","","series","",0,false,"TV & Web Series",""],["Better Call Saul","","series","",0,false,"TV & Web Series",""],["Money Heist","","series","Season 1, 2, 3, 4, 5, 6, 7, 8",0,false,"TV & Web Series",""],["Money Heist: From Tokyo to Berlin : Documentary","","series","",0,false,"TV & Web Series",""],["HANNIBAL","2014","series","",0,false,"TV & Web Series",""],["It’s Okay to Not Be Okay","","series","",0,false,"TV & Web Series",""],["The King: Eternal Monarch","","series","",0,false,"TV & Web Series",""],["The Silent Sea","","series","",0,false,"TV & Web Series",""],["Vincenzo","","series","",0,false,"TV & Web Series",""],["Narco-Saints | The Accidental Narco","","series","",0,false,"TV & Web Series",""],["Squid Game","","series","",0,false,"TV & Web Series",""],["3 Body Problem","","series","Season 1",0,false,"TV & Web Series",""],["My Name","","series","",0,false,"TV & Web Series",""],["Mr. & Mrs. Smith","","series","Season 1",0,false,"TV & Web Series",""],["All of Us Are Dead","","series","",0,false,"TV & Web Series",""],["A Killer Paradox","","series","",0,false,"TV & Web Series",""],["Shadow and Bone","","series","",0,false,"TV & Web Series",""],["The Lord of the Rings: The Rings of Power","","series","",0,false,"TV & Web Series",""],["GOT – Game of Thrones","","series","",0,false,"TV & Web Series",""],["House of the Dragon","","series","",0,false,"TV & Web Series",""],["Vikings","","series","",0,false,"TV & Web Series",""],["The Wheel of Time","","series","",0,false,"TV & Web Series",""],["The Witcher","","series","",0,false,"TV & Web Series",""],["Carnival Row","","series","",0,false,"TV & Web Series",""],["The Sandman","","series","",0,false,"TV & Web Series",""],["The Last of Us","","series","",0,false,"TV & Web Series",""],["House of Saddam","","series","",0,false,"TV & Web Series",""],["Kaleidoscope","","series","",0,false,"TV & Web Series",""],["Peaky Blinders","","series","",0,false,"TV & Web Series",""],["Wednesday Addams","","series","",0,false,"TV & Web Series",""],["A Discovery of Witches","","series","",0,false,"TV & Web Series",""],["Mrs. Fletcher","","series","Season 1",0,false,"TV & Web Series",""],["Loki","","series","",0,false,"TV & Web Series",""],["Echo","","series","",0,false,"TV & Web Series",""],["Morbius","2022","series","",0,false,"TV & Web Series",""],["Madame Web","2024","series","",0,false,"TV & Web Series",""],["Ghost Rider","2007","series","",0,false,"TV & Web Series",""],["Hawkeye","","series","",0,false,"TV & Web Series",""],["IRON FIST","","series","",0,false,"TV & Web Series",""],["DAREDEVIL","","series","",0,false,"TV & Web Series",""],["Ms. Marvel","","series","",0,false,"TV & Web Series",""],["I Am Groot","","series","",0,false,"TV & Web Series",""],["Moon Knight","","series","",0,false,"TV & Web Series",""],["Secret Invasion","","series","",0,false,"TV & Web Series",""],["She-Hulk: Attorney at Law","","series","",0,false,"TV & Web Series",""],["Marvel’s Iron Fist","","series","Season 1-2",0,false,"TV & Web Series",""],["Spider-Man","2002","series","",0,false,"TV & Web Series",""],["Spider-Man 2","2004","series","",0,false,"TV & Web Series",""],["Spider-Man 3","2007","series","",0,false,"TV & Web Series",""],["The Amazing Spider-Man","2012","series","",0,false,"TV & Web Series",""],["The Amazing Sider-Man 2","2014","series","",0,false,"TV & Web Series",""],["Spider-Man: Homecomin","2017","series","",0,false,"TV & Web Series",""],["Spider-Man: Far from Home","2019","series","",0,false,"TV & Web Series",""],["Spider-Man: No Way Home","2021","series","",0,false,"TV & Web Series",""],["Spider-Man: Into the Spider-Verse","2018","series","",0,false,"TV & Web Series",""],["Spider-Man: Across the Spider-Verse","2023","series","",0,false,"TV & Web Series",""],["Venom","2018","series","",0,false,"TV & Web Series",""],["Venom: Let There Be Carnage","2021","series","",0,false,"TV & Web Series",""],["Venom : The Last Dance","2024","series","",0,false,"TV & Web Series",""],["Stranger Things","","series","Season 1 + 2 + 3 + 4 + 5",0,false,"TV & Web Series",""],["The Good Doctor","","series","",0,false,"TV & Web Series",""],["The Cleaning Lady","","series","",0,false,"TV & Web Series",""],["Who Is Erin Carter?","","series","",0,false,"TV & Web Series",""],["The Continental: From the World of John Wick","","series","",0,false,"TV & Web Series",""],["Avatar: The Last Airbender","","series","",0,false,"TV & Web Series",""],["Sex Education","","series","",0,false,"TV & Web Series",""],["Mayor of Kingstown","","series","",0,false,"TV & Web Series",""],["1899","","series","",0,false,"TV & Web Series",""],["Aspirants","","series","",0,false,"TV & Web Series",""],["Half CA","","series","Season 1-2",0,false,"TV & Web Series",""],["SANDEEP BHAIYA","","series","",0,false,"TV & Web Series",""],["SK SIR KI CLASS","","series","",0,false,"TV & Web Series",""],["Cubicles","","series","",0,false,"TV & Web Series",""],["Gutar Gu 1 + 2","","series","",0,false,"TV & Web Series",""],["Mismatched","","series","",0,false,"TV & Web Series",""],["Tooth Pari: When Love Bites","","series","",0,false,"TV & Web Series",""],["Dharavi Bank","","series","",0,false,"TV & Web Series",""],["Hunter – Tootega Nahi, Todega","","series","",0,false,"TV & Web Series",""],["Jamnapaar","","series","",0,false,"TV & Web Series",""],["Ishq Express","","series","",0,false,"TV & Web Series",""],["Highway Love 1 + 2","","series","",0,false,"TV & Web Series",""],["Ishq In The Air 1","2024","series","",0,false,"TV & Web Series",""],["Flames 1, 2, 3","","series","",0,false,"TV & Web Series",""],["Dhindora","","series","Season 1",0,false,"TV & Web Series",""],["Amber Girls School","2024","series","",0,false,"TV & Web Series",""]]; // [title, year, type, subtitle, rating, fav, category, genre]
+const keyOf = (t,y,sub)=>(t+'|'+(y||'')+'|'+(sub||'')).toLowerCase();
+function importPending(){ const have=new Set(entries.map(e=>keyOf(e.title,e.year,e.subtitle))); return IMPORT_DATA.filter(r=>!have.has(keyOf(r[0],r[1],r[3]))); }
+function updateImportPanel(){ const n=importPending().length; if(!importRunning) $('importPanel').style.display = n?'':'none'; $('importCount').textContent=n; }
+let importRunning=false;
+$('importBtn').onclick = ()=>{
+  const list=importPending(); if(!list.length) return;
+  askConfirm(`Add ${list.length} finished titles to your Watched Log? Posters are fetched automatically (about a minute). Titles already in your log are skipped.`, ()=>runImport(list), 'Yes, import');
+};
+async function runImport(list){
+  importRunning=true; $('importBtn').disabled=true; const msg=$('importMsg');
+  const posters=new Array(list.length).fill(null); let next=0, done=0;
+  const worker=async()=>{ while(next<list.length){ const k=next++; const r=list[k];
+    try{ const p=await fetchPoster(r[0],r[1],r[2]); posters[k]=p?p.poster:null; }catch(e){}
+    msg.textContent=`Fetching posters ${++done}/${list.length}…`; } };
+  await Promise.all(Array.from({length:6}, worker));
+  const base=Date.now();
+  try{
+    for(let s=0;s<list.length;s+=400){
+      const batch=writeBatch(db);
+      list.slice(s,s+400).forEach((r,j)=>{ const k=s+j, id=uid()+k;
+        batch.set(doc(db,'entries',id), { id, type:r[2], title:r[0], subtitle:r[3]||'', year:r[1]||'', season:null, part:null, date:'', rating:r[4], fav:!!r[5], poster:posters[k],
+          category:r[6]||null, genres:r[7]?[r[7]]:[], director:null, cast:null, platform:null, status:'Watched', review:null, comments:[], createdAt:base-k }); });
+      msg.textContent=`Saving ${Math.min(s+400,list.length)}/${list.length}…`;
+      await batch.commit();
+    }
+    msg.textContent='Done ✓ — all titles were added to your Watched Log.';
+  }catch(e){ console.error(e); msg.textContent='Save failed: '+e.message+' (check Firestore rules)'; }
+  importRunning=false; $('importBtn').disabled=false; setTimeout(updateImportPanel,2500);
+}
+
+function renderAll(){ renderCards(); renderDashboard(); if(detailId) renderDetail(); updateImportPanel(); }
 
 startSync();
 </script>
